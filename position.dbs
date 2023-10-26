@@ -1,0 +1,1217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="PostgreSQL" id="Project_2e73320" database="PostgreSQL" >
+	<schema name="public" >
+		<table name="gb_perfiles" >
+			<comment><![CDATA[Perrfiles dfe usuario]]></comment>
+			<column name="id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[ID unico del registro]]></comment>
+			</column>
+			<column name="nombre" type="varchar" length="150" jt="12" mandatory="y" >
+				<comment><![CDATA[Nombre del perfil del usuario]]></comment>
+			</column>
+			<column name="permisos" type="text" jt="12" mandatory="y" >
+				<comment><![CDATA[Permisos del usuario]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de modificacion del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_gb_perfiles_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="gps_imei" >
+			<comment><![CDATA[Tabla de de IMEI vinculada a la patente y al transportista]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID unico del registro]]></comment>
+			</column>
+			<column name="transportista_id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[ID del transportista al cualk pertenece la patente]]></comment>
+			</column>
+			<column name="proveedor_id" type="bigint" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID del proveefor de servicio GPS coion el cual se relaciona el IMEI]]></comment>
+			</column>
+			<column name="patente_id" type="bigint" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID de la patente con la cual se relaciona el IMWI]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de modificacion del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_trn_patentes_id_0" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_trn_patentes_transportista-id_0" unique="UNIQUE" >
+				<column name="transportista_id" />
+			</index>
+			<fk name="fk_gps_imei_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
+			</fk>
+			<fk name="fk_gps_imei_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+			<fk name="fk_gps_imei_trn_patentes" to_schema="public" to_table="trn_patentes" >
+				<fk_column name="patente_id" pk="id" />
+			</fk>
+		</table>
+		<table name="gps_proveedor" >
+			<comment><![CDATA[Tabla del del provedor del dervicio GPS]]></comment>
+			<column name="id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[Identificaciu´ón ´único del registro]]></comment>
+			</column>
+			<column name="razon_social" type="char" length="50" jt="1" mandatory="y" >
+				<comment><![CDATA[Razon sociual del proveedor del servicio GPS]]></comment>
+			</column>
+			<column name="email" type="char" length="50" jt="1" mandatory="y" >
+				<comment><![CDATA[Email del contacto del proveedor del sdervicio GPS]]></comment>
+			</column>
+			<column name="total" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad total de vehiculos que maneja el proveedor del servicio GPS]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creaci´ón del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de actiañizacion´ón del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado logico´ón del registro]]></comment>
+			</column>
+			<index name="pk_gps_transportista_id_0" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="gps_real_time" >
+			<comment><![CDATA[Tabla de almacenamiento de toda la data entrante]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificación única del registro]]></comment>
+			</column>
+			<column name="rawdata" type="text" jt="12" mandatory="y" >
+				<comment><![CDATA[Data en bruto proveniente del GPS]]></comment>
+			</column>
+			<column name="rejected" type="bool" jt="-7" >
+				<defo>false</defo>
+				<comment><![CDATA[Cadena rechazada proveniente del gps]]></comment>
+			</column>
+			<column name="imei_id" type="bigint" jt="-5" >
+				<comment><![CDATA[ID del  IMEI]]></comment>
+			</column>
+			<column name="transportista_id" type="bigint" jt="-5" />
+			<column name="proveedor_id" type="bigint" jt="-5" >
+				<comment><![CDATA[ID del proveefor del dercivio de GPS]]></comment>
+			</column>
+			<column name="patente_id" type="bigint" jt="-5" >
+				<comment><![CDATA[ID de la patente]]></comment>
+			</column>
+			<column name="timestamp_gps" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp en la cual se generó la señal en el GPS]]></comment>
+			</column>
+			<column name="timestamp_sys" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la recepción de la data del GPS]]></comment>
+			</column>
+			<column name="frecuencia" type="time" jt="92" >
+				<comment><![CDATA[Diferencia de tiempo entre el registro actual y el anterior]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia dek GPS]]></comment>
+			</column>
+			<column name="ordenada" type="smallint" jt="5" mandatory="y" >
+				<defo>1</defo>
+				<comment><![CDATA[Indica si la fecha de recpción del datos es posterior al dato anterior, en cuyo caso su valor es 1; si la fecha de recepción es naterior al registro previo, su valor es 0]]></comment>
+			</column>
+			<column name="motor" type="smallint" jt="5" mandatory="y" >
+				<defo>1</defo>
+				<comment><![CDATA[Indica si el dato fue enciado con el motor encendido o no; en caso de ser asi, su valor es 1, encaso contrario 0]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_gps_real_time_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_gps_real_time_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
+			</fk>
+			<fk name="fk_gps_real_time_trn_patentes" to_schema="public" to_table="trn_patentes" >
+				<fk_column name="imei_id" pk="id" />
+			</fk>
+			<fk name="fk_gps_real_time_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+			<fk name="fk_gps_real_time_gps_imei" to_schema="public" to_table="gps_imei" >
+				<fk_column name="patente_id" pk="id" />
+			</fk>
+		</table>
+		<table name="gps_transportista" >
+			<comment><![CDATA[Tabla del del transportista]]></comment>
+			<column name="id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[Identificaciu´ón ´único del registro]]></comment>
+			</column>
+			<column name="razon_social" type="char" length="50" jt="1" mandatory="y" >
+				<comment><![CDATA[Razon sociual del proveedor del servicio GPS]]></comment>
+			</column>
+			<column name="codigo" type="char" length="50" jt="1" mandatory="y" >
+				<comment><![CDATA[Dodigo del transportista]]></comment>
+			</column>
+			<column name="email" type="char" length="50" jt="1" mandatory="y" >
+				<comment><![CDATA[Email del contacto del proveedor del sdervicio GPS]]></comment>
+			</column>
+			<column name="total" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad total de vehiculos que maneja el proveedor del servicio GPS]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creaci´ón del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de actiañizacion´ón del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado logico´ón del registro]]></comment>
+			</column>
+			<index name="pk_gps_transportista_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_gps_transportista_trn_patentes" to_schema="public" to_table="trn_patentes" >
+				<fk_column name="id" pk="transportista_id" />
+			</fk>
+		</table>
+		<table name="stats_gps_day" >
+			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="imei_id" type="bigint" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID del imei]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="dia" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Día del mes en la cual se genera el resúmen de la estadística, para esa fecha (1 - 31)]]></comment>
+			</column>
+			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="recibidas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_0" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_stats_gps_day_gps_imei" to_schema="public" to_table="gps_imei" >
+				<fk_column name="imei_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_hour" >
+			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="hora" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Hora del día en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
+			</column>
+			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="imei_id" type="bigint" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID del imei]]></comment>
+			</column>
+			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="recibidas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_stats_gps_hour_gps_imei" to_schema="public" to_table="gps_imei" >
+				<fk_column name="imei_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_week" >
+			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="imei_id" type="bigint" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID del imei]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="semana" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha (1 - 52)]]></comment>
+			</column>
+			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="recibidas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_1" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_stats_gps_week_gps_imei" to_schema="public" to_table="gps_imei" >
+				<fk_column name="imei_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_trafic_proveedor_day" >
+			<comment><![CDATA[Stadísitcas de tráfico del proveedor por minuto]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificador unico del registro]]></comment>
+			</column>
+			<column name="proveedor_id" type="integer" jt="4" >
+				<comment><![CDATA[ID dfeñpr]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la data]]></comment>
+			</column>
+			<column name="dia" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Dia de la data (1-31)]]></comment>
+			</column>
+			<column name="cantidad" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la ultima actualización del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_stats_trafic_proveedor_min_id_0" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_stats_trafic_proveedor_day_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_trafic_proveedor_min" >
+			<comment><![CDATA[Stadísitcas de tráfico del proveedor por minuto]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificador unico del registro]]></comment>
+			</column>
+			<column name="proveedor_id" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[ID del probeedpr]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la data]]></comment>
+			</column>
+			<column name="hora" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Hora de la data]]></comment>
+			</column>
+			<column name="minuto" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Minuto de la data (0 - 59)]]></comment>
+			</column>
+			<column name="cantidad" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de última actualización del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_stats_trafic_proveedor_min_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_stats_trafic_proveedor_min_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_trafic_proveedor_month" >
+			<comment><![CDATA[Stadísitcas de tráfico del proveedor por mes]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificador unico del registro]]></comment>
+			</column>
+			<column name="proveedor_id" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[ID del proveedor de servio GPS]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la data]]></comment>
+			</column>
+			<column name="mes" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Mes de la data (1-12)]]></comment>
+			</column>
+			<column name="cantidad" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la ultima actualizacion del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_stats_trafic_proveedor_min_id_1" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_stats_trafic_proveedor_month_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="trn_patentes" >
+			<comment><![CDATA[Tabla de patentes de los transportistas]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[ID unico del registro]]></comment>
+			</column>
+			<column name="transportista_id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[ID del transportista al cualk pertenece la patente]]></comment>
+			</column>
+			<column name="patente" type="char" length="6" jt="1" mandatory="y" >
+				<comment><![CDATA[´´umero de la patente]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de modificacion del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_trn_patentes_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_trn_patentes_transportista-id" unique="UNIQUE" >
+				<column name="transportista_id" />
+			</index>
+		</table>
+		<table name="uswea" >
+			<comment><![CDATA[Tabla de usuarios]]></comment>
+			<column name="id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[ID unico del registro]]></comment>
+			</column>
+			<column name="perfil_id" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[ID del perfil del usuario]]></comment>
+			</column>
+			<column name="name" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[Nombre dek usuario]]></comment>
+			</column>
+			<column name="email" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[Emaik del usuario]]></comment>
+			</column>
+			<column name="email_verified_at" type="timestamp" jt="93" mandatory="y" >
+				<comment><![CDATA[Timestamp de la verificacion del correo]]></comment>
+			</column>
+			<column name="password" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[Clave del usuario]]></comment>
+			</column>
+			<column name="avatar" type="text" jt="12" >
+				<comment><![CDATA[Avatar deñ usuario]]></comment>
+			</column>
+			<column name="remember_token" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[Recordar toalen de usuario]]></comment>
+			</column>
+			<column name="bloqueado" type="bool" jt="-7" >
+				<defo>false</defo>
+				<comment><![CDATA[Indica si el usuario est´á bloqueado o no]]></comment>
+			</column>
+			<column name="old_psw" type="text" jt="12" >
+				<comment><![CDATA[Clave anterior]]></comment>
+			</column>
+			<column name="two_steps" type="bool" jt="-7" >
+				<defo>false</defo>
+				<comment><![CDATA[Verificacion de dos factores]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de modificacion del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrADO LOGICO del registro]]></comment>
+			</column>
+			<index name="pk_uswea_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_uswea_gb_perfiles" to_schema="public" to_table="gb_perfiles" >
+				<fk_column name="perfil_id" pk="id" />
+			</fk>
+		</table>
+		<procedure name="akeys" id="Procedure_5a16d89" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.akeys(hstore)
+ RETURNS text[]
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_akeys$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="2003" type="_text" />
+		</procedure>
+		<procedure name="avals" id="Procedure_2722269" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.avals(hstore)
+ RETURNS text[]
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_avals$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="2003" type="_text" />
+		</procedure>
+		<procedure name="defined" id="Procedure_4923724" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.defined(hstore, text)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_defined$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="delete" id="Procedure_16307c5" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, hstore)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_delete_hstore$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="delete" id="Procedure_55c40f6" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_delete_array$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="delete" id="Procedure_3cda061" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, text)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_delete$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="each" id="Procedure_49ad5df" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.each(hs hstore, OUT key text, OUT value text)
+ RETURNS SETOF record
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_each$function$
+;]]></string>
+			<input_param name="hs" jt="1111" type="hstore" />
+			<input_param name="key" jt="12" type="text" />
+			<input_param name="value" jt="12" type="text" />
+		</procedure>
+		<procedure name="exist" id="Procedure_3d5f618" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.exist(hstore, text)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_exists$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="exists_all" id="Procedure_f01227" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.exists_all(hstore, text[])
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_exists_all$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="exists_any" id="Procedure_445940" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.exists_any(hstore, text[])
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_exists_any$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="fetchval" id="Procedure_4352c5c" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.fetchval(hstore, text)
+ RETURNS text
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_fetchval$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="12" type="text" />
+		</procedure>
+		<procedure name="ghstore_compress" id="Procedure_4bf3308" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_compress(internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_compress$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="ghstore_consistent" id="Procedure_5902a71" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_consistent(internal, hstore, smallint, oid, internal)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_consistent$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<input_param name="$3" jt="5" type="int2" />
+			<input_param name="$4" jt="-5" type="oid" />
+			<input_param name="$5" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="ghstore_decompress" id="Procedure_2931fa3" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_decompress(internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_decompress$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="ghstore_in" id="Procedure_5e20415" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_in(cstring)
+ RETURNS ghstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_in$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="cstring" />
+			<result_param name="returnValue" jt="1111" type="ghstore" />
+		</procedure>
+		<procedure name="ghstore_out" id="Procedure_2d1e207" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_out(ghstore)
+ RETURNS cstring
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_out$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="ghstore" />
+			<result_param name="returnValue" jt="1111" type="cstring" />
+		</procedure>
+		<procedure name="ghstore_penalty" id="Procedure_32d2fa5" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_penalty(internal, internal, internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_penalty$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<input_param name="$2" jt="1111" type="internal" />
+			<input_param name="$3" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="ghstore_picksplit" id="Procedure_446d2f7" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_picksplit(internal, internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_picksplit$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<input_param name="$2" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="ghstore_same" id="Procedure_393bbbd" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_same(ghstore, ghstore, internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_same$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="ghstore" />
+			<input_param name="$2" jt="1111" type="ghstore" />
+			<input_param name="$3" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="ghstore_union" id="Procedure_3e216f1" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.ghstore_union(internal, internal)
+ RETURNS ghstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$ghstore_union$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<input_param name="$2" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="ghstore" />
+		</procedure>
+		<procedure name="gin_consistent_hstore" id="Procedure_138ab8d" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.gin_consistent_hstore(internal, smallint, hstore, integer, internal, internal)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$gin_consistent_hstore$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<input_param name="$2" jt="5" type="int2" />
+			<input_param name="$3" jt="1111" type="hstore" />
+			<input_param name="$4" jt="4" type="int4" />
+			<input_param name="$5" jt="1111" type="internal" />
+			<input_param name="$6" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="gin_extract_hstore" id="Procedure_311f011" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.gin_extract_hstore(hstore, internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$gin_extract_hstore$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="gin_extract_hstore_query" id="Procedure_38d40ad" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.gin_extract_hstore_query(hstore, internal, smallint, internal, internal)
+ RETURNS internal
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$gin_extract_hstore_query$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="internal" />
+			<input_param name="$3" jt="5" type="int2" />
+			<input_param name="$4" jt="1111" type="internal" />
+			<input_param name="$5" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="internal" />
+		</procedure>
+		<procedure name="hs_concat" id="Procedure_4b0a622" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hs_concat(hstore, hstore)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_concat$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hs_contained" id="Procedure_2d86774" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hs_contained(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_contained$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hs_contains" id="Procedure_2b6afec" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hs_contains(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_contains$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_134a24" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE
+AS '$libdir/hstore', $function$hstore_from_record$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="record" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_32d78e4" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_from_array$function$
+;]]></string>
+			<input_param name="$1" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_104c8e6" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[], text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE
+AS '$libdir/hstore', $function$hstore_from_arrays$function$
+;]]></string>
+			<input_param name="$1" jt="2003" type="_text" />
+			<input_param name="$2" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_120145e" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE
+AS '$libdir/hstore', $function$hstore_from_text$function$
+;]]></string>
+			<input_param name="$1" jt="12" type="text" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore_cmp" id="Procedure_25476f8" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_cmp(hstore, hstore)
+ RETURNS integer
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_cmp$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="hstore_eq" id="Procedure_12b8ffb" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_eq(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_eq$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore_ge" id="Procedure_5b0d338" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_ge(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_ge$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore_gt" id="Procedure_10759ab" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_gt(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_gt$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore_hash" id="Procedure_34ce2d" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_hash(hstore)
+ RETURNS integer
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_hash$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="hstore_hash_extended" id="Procedure_326a49b" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_hash_extended(hstore, bigint)
+ RETURNS bigint
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_hash_extended$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="-5" type="int8" />
+			<result_param name="returnValue" jt="-5" type="int8" />
+		</procedure>
+		<procedure name="hstore_in" id="Procedure_2d4b0d7" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_in(cstring)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_in$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="cstring" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore_le" id="Procedure_19fc28c" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_le(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_le$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore_lt" id="Procedure_5df8ab3" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_lt(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_lt$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore_ne" id="Procedure_489449" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_ne(hstore, hstore)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_ne$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="hstore_out" id="Procedure_138843b" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_out(hstore)
+ RETURNS cstring
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_out$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="cstring" />
+		</procedure>
+		<procedure name="hstore_recv" id="Procedure_4557f8c" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_recv(internal)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_recv$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="internal" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore_send" id="Procedure_1eb41fd" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_send(hstore)
+ RETURNS bytea
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_send$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="-2" type="bytea" />
+		</procedure>
+		<procedure name="hstore_to_array" id="Procedure_35887fa" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_to_array(hstore)
+ RETURNS text[]
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_to_array$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="2003" type="_text" />
+		</procedure>
+		<procedure name="hstore_to_json" id="Procedure_1146a3b" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_to_json(hstore)
+ RETURNS json
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_to_json$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="json" />
+		</procedure>
+		<procedure name="hstore_to_json_loose" id="Procedure_3046ffe" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_to_json_loose(hstore)
+ RETURNS json
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_to_json_loose$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="json" />
+		</procedure>
+		<procedure name="hstore_to_jsonb" id="Procedure_19dafe5" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_to_jsonb(hstore)
+ RETURNS jsonb
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_to_jsonb$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="jsonb" />
+		</procedure>
+		<procedure name="hstore_to_jsonb_loose" id="Procedure_44bd43b" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_to_jsonb_loose(hstore)
+ RETURNS jsonb
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_to_jsonb_loose$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="jsonb" />
+		</procedure>
+		<procedure name="hstore_to_matrix" id="Procedure_5cc3787" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_to_matrix(hstore)
+ RETURNS text[]
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_to_matrix$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="2003" type="_text" />
+		</procedure>
+		<procedure name="hstore_version_diag" id="Procedure_102b3c5" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore_version_diag(hstore)
+ RETURNS integer
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_version_diag$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="isdefined" id="Procedure_44f6a71" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.isdefined(hstore, text)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_defined$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="isexists" id="Procedure_1925008" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.isexists(hstore, text)
+ RETURNS boolean
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_exists$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="-7" type="bool" />
+		</procedure>
+		<procedure name="populate_record" id="Procedure_3142867" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.populate_record(anyelement, hstore)
+ RETURNS anyelement
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE
+AS '$libdir/hstore', $function$hstore_populate_record$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="anyelement" />
+			<input_param name="$2" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="1111" type="anyelement" />
+		</procedure>
+		<procedure name="skeys" id="Procedure_5dfe543" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.skeys(hstore)
+ RETURNS SETOF text
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_skeys$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="12" type="text" />
+		</procedure>
+		<procedure name="slice" id="Procedure_15975ef" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.slice(hstore, text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_slice_to_hstore$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="slice_array" id="Procedure_4342391" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.slice_array(hstore, text[])
+ RETURNS text[]
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_slice_to_array$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<input_param name="$2" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="2003" type="_text" />
+		</procedure>
+		<procedure name="svals" id="Procedure_1e434af" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.svals(hstore)
+ RETURNS SETOF text
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_svals$function$
+;]]></string>
+			<input_param name="$1" jt="1111" type="hstore" />
+			<result_param name="returnValue" jt="12" type="text" />
+		</procedure>
+		<procedure name="tconvert" id="Procedure_f4d883" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.tconvert(text, text)
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE
+AS '$libdir/hstore', $function$hstore_from_text$function$
+;]]></string>
+			<input_param name="$1" jt="12" type="text" />
+			<input_param name="$2" jt="12" type="text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+	</schema>
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.8.jar" driver_desc="Standard" host="localhost" port="5432" instance="position" user="postgres" passwd="cG9zdGdyZXM=" />
+	<layout name="Default Layout" id="Layout_2a86029" show_relation="columns" >
+		<entity schema="public" name="gps_transportista" color="C1D8EE" x="336" y="96" />
+		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="464" y="624" />
+		<entity schema="public" name="stats_gps_hour" color="C1D8EE" x="528" y="384" />
+		<entity schema="public" name="stats_gps_day" color="3986C1" x="704" y="368" />
+		<entity schema="public" name="stats_gps_week" color="3986C1" x="864" y="352" />
+		<entity schema="public" name="stats_trafic_proveedor_min" color="C1D8EE" x="48" y="640" />
+		<entity schema="public" name="stats_trafic_proveedor_day" color="3986C1" x="256" y="640" />
+		<entity schema="public" name="uswea" color="C1D8EE" x="672" y="48" />
+		<entity schema="public" name="gb_perfiles" color="C1D8EE" x="864" y="64" />
+		<entity schema="public" name="trn_patentes" color="C1D8EE" x="512" y="96" />
+		<entity schema="public" name="gps_real_time" color="C1D8EE" x="64" y="112" />
+		<entity schema="public" name="gps_proveedor" color="3986C1" x="64" y="496" />
+		<entity schema="public" name="gps_imei" color="3986C1" x="320" y="336" />
+		<script name="gps_real_time" id="Editor_b35dfd" language="SQL" >
+			<string><![CDATA[CREATE  TABLE "public".gps_real_time ( 
+	id                   bigserial  NOT NULL ,
+	raw_data             text       NOT NULL,
+	imei_id              bigint   ,
+	transportista_id     bigint   ,
+	proveedor_id         bigint   ,
+	patente_id           bigint   ,
+	timestamp_gps        timestamp   ,
+	timestamp_sys        timestamp   ,
+	frecuencia           time   ,
+	latencia             integer  NOT NULL ,
+	ordenada             smallint DEFAULT 1 NOT NULL ,
+	motor                smallint DEFAULT 1 NOT NULL ,
+	created_at           timestamp DEFAULT current_timestamp  ,
+	updated_at           timestamp   ,
+	deleted_at           timestamp   ,
+	CONSTRAINT pk_gps_real_time_id PRIMARY KEY ( id )
+ );
+
+COMMENT ON TABLE "public".gps_real_time IS 'Tabla de almacenamiento de toda la data entrante';
+
+COMMENT ON COLUMN "public".gps_real_time.id IS 'Identificación única del registro';
+
+COMMENT ON COLUMN "public".gps_real_time.imei_id IS 'ID del  IMEI';
+
+COMMENT ON COLUMN "public".gps_real_time.proveedor_id IS 'ID del proveefor del dercivio de GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.patente_id IS 'ID de la patente';
+
+COMMENT ON COLUMN "public".gps_real_time.timestamp_gps IS 'Timestamp en la cual se generó la señal en el GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.timestamp_sys IS 'Timestamp de la recepción de la data del GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.frecuencia IS 'Diferencia de tiempo entre el registro actual y el anterior';
+
+COMMENT ON COLUMN "public".gps_real_time.latencia IS 'Latencia dek GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.ordenada IS 'Indica si la fecha de recpción del datos es posterior al dato anterior, en cuyo caso su valor es 1; si la fecha de recepción es naterior al registro previo, su valor es 0';
+
+COMMENT ON COLUMN "public".gps_real_time.motor IS 'Indica si el dato fue enciado con el motor encendido o no; en caso de ser asi, su valor es 1, encaso contrario 0';
+
+COMMENT ON COLUMN "public".gps_real_time.created_at IS 'Timestamp de creación del registro';
+
+COMMENT ON COLUMN "public".gps_real_time.updated_at IS 'Timestamp de modificación del registro';
+
+COMMENT ON COLUMN "public".gps_real_time.deleted_at IS 'Timestamp de borrado lógico del registro';
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_transportista FOREIGN KEY ( transportista_id ) REFERENCES "public".gps_transportista( id );
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_trn_patentes FOREIGN KEY ( imei_id ) REFERENCES "public".trn_patentes( id );
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_proveedor FOREIGN KEY ( proveedor_id ) REFERENCES "public".gps_proveedor( id );
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_imei FOREIGN KEY ( patente_id ) REFERENCES "public".gps_imei( id );
+]]></string>
+		</script>
+	</layout>
+</project>
