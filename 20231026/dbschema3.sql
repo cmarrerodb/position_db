@@ -1,101 +1,35 @@
-CREATE SCHEMA "public";
 
 CREATE SEQUENCE "public".gb_perfiles_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".gb_perfiles_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".gps_imei_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".gps_imei_id_seq1 START WITH 1;
 
 CREATE SEQUENCE "public".gps_imei_transportista_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".gps_imei_transportista_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".gps_proveedor_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".gps_proveedor_id_seq1 START WITH 1;
 
 CREATE SEQUENCE "public".gps_real_time_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".gps_real_time_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".gps_transportista_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".gps_transportista_id_seq1 START WITH 1;
 
 CREATE SEQUENCE "public".stats_gps_day_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".stats_gps_day_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".stats_gps_hour_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".stats_gps_hour_id_seq1 START WITH 1;
-
-CREATE SEQUENCE "public".stats_gps_month_id_seq START WITH 1;
 
 CREATE SEQUENCE "public".stats_gps_week_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".stats_gps_week_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".stats_trafic_proveedor_day_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".stats_trafic_proveedor_day_id_seq1 START WITH 1;
 
 CREATE SEQUENCE "public".stats_trafic_proveedor_hour_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".stats_trafic_proveedor_hour_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".stats_trafic_proveedor_min_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".stats_trafic_proveedor_min_id_seq1 START WITH 1;
 
 CREATE SEQUENCE "public".stats_trafic_proveedor_month_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".stats_trafic_proveedor_month_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".trn_patentes_id_seq START WITH 1;
-
-CREATE SEQUENCE "public".trn_patentes_id_seq1 START WITH 1;
 
 CREATE SEQUENCE "public".trn_patentes_transportista_id_seq START WITH 1;
 
-CREATE SEQUENCE "public".trn_patentes_transportista_id_seq1 START WITH 1;
-
 CREATE SEQUENCE "public".user_id_seq START WITH 1;
-
-CREATE  TABLE "public".cnf_colores ( 
-	id                   serial  NOT NULL ,
-	inicio               smallint  NOT NULL ,
-	"final"              smallint  NOT NULL ,
-	color                char(7)  NOT NULL ,
-	descripcion          varchar(35)  NOT NULL ,
-	deleted_at           timestamp   ,
-	created_at           timestamp DEFAULT current_timestamp  ,
-	updated_at           timestamp   ,
-	unidad               integer  NOT NULL ,
-	CONSTRAINT pk_cnf_colores_id PRIMARY KEY ( id )
- );
-
-COMMENT ON TABLE "public".cnf_colores IS 'Configuraci´ón de rango de colores de las patentes desarodenadas';
-
-COMMENT ON COLUMN "public".cnf_colores.id IS 'Id unico del registro';
-
-COMMENT ON COLUMN "public".cnf_colores.inicio IS 'Valor inicial del rango';
-
-COMMENT ON COLUMN "public".cnf_colores."final" IS 'Valor final del rango';
-
-COMMENT ON COLUMN "public".cnf_colores.color IS 'Color a aplicar al rango, en hexadecimal';
-
-COMMENT ON COLUMN "public".cnf_colores.descripcion IS 'Descripcion de donde aplica el rango';
-
-COMMENT ON COLUMN "public".cnf_colores.deleted_at IS 'Timestamp de borrado logico del registro';
-
-COMMENT ON COLUMN "public".cnf_colores.created_at IS 'Timestamp de creacion del registro';
-
-COMMENT ON COLUMN "public".cnf_colores.updated_at IS 'Timestamp de moficiacion del registro';
-
-COMMENT ON COLUMN "public".cnf_colores.unidad IS 'Unidad del rango: 1 porcewntaje, 2 cantidad';
 
 CREATE  TABLE "public".gb_perfiles ( 
 	id                   serial  NOT NULL ,
@@ -159,8 +93,6 @@ CREATE  TABLE "public".stats_trafic_proveedor_day (
 	CONSTRAINT pk_stats_trafic_proveedor_min_id_0 PRIMARY KEY ( id )
  );
 
-CREATE INDEX idx_stats_trafic_proveedor_day ON "public".stats_trafic_proveedor_day ( id, proveedor_id );
-
 COMMENT ON TABLE "public".stats_trafic_proveedor_day IS 'Stadísitcas de tráfico del proveedor por minuto';
 
 COMMENT ON COLUMN "public".stats_trafic_proveedor_day.id IS 'Identificador unico del registro';
@@ -188,8 +120,6 @@ CREATE  TABLE "public".stats_trafic_proveedor_hour (
 	deleted_at           timestamp   ,
 	CONSTRAINT pk_stats_trafic_proveedor_min_id_2 PRIMARY KEY ( id )
  );
-
-CREATE INDEX idx_stats_trafic_proveedor_hour ON "public".stats_trafic_proveedor_hour ( id, proveedor_id );
 
 COMMENT ON TABLE "public".stats_trafic_proveedor_hour IS 'Stadísitcas de tráfico del proveedor por hora';
 
@@ -222,8 +152,6 @@ CREATE  TABLE "public".stats_trafic_proveedor_min (
 	deleted_at           timestamp   ,
 	CONSTRAINT pk_stats_trafic_proveedor_min_id PRIMARY KEY ( id )
  );
-
-CREATE INDEX idx_stats_trafic_proveedor_min ON "public".stats_trafic_proveedor_min ( id, proveedor_id );
 
 COMMENT ON TABLE "public".stats_trafic_proveedor_min IS 'Stadísitcas de tráfico del proveedor por minuto';
 
@@ -259,8 +187,6 @@ CREATE  TABLE "public".stats_trafic_proveedor_month (
 	CONSTRAINT pk_stats_trafic_proveedor_min_id_1 PRIMARY KEY ( id )
  );
 
-CREATE INDEX idx_stats_trafic_proveedor_month ON "public".stats_trafic_proveedor_month ( id, proveedor_id );
-
 COMMENT ON TABLE "public".stats_trafic_proveedor_month IS 'Stadísitcas de tráfico del proveedor por mes';
 
 COMMENT ON COLUMN "public".stats_trafic_proveedor_month.id IS 'Identificador unico del registro';
@@ -287,8 +213,7 @@ CREATE  TABLE "public".trn_patentes (
 	updated_at           timestamp   ,
 	deleted_at           timestamp   ,
 	CONSTRAINT pk_trn_patentes_id PRIMARY KEY ( id ),
-	CONSTRAINT "unq_trn_patentes_transportista-id" UNIQUE ( transportista_id ) ,
-	CONSTRAINT idx_trn_patentes UNIQUE ( patente ) 
+	CONSTRAINT "unq_trn_patentes_transportista-id" UNIQUE ( transportista_id ) 
  );
 
 COMMENT ON TABLE "public".trn_patentes IS 'Tabla de patentes de los transportistas';
@@ -320,11 +245,8 @@ CREATE  TABLE "public"."user" (
 	created_at           timestamp DEFAULT CURRENT_TIMESTAMP  ,
 	updated_at           timestamp   ,
 	deleted_at           timestamp   ,
-	CONSTRAINT pk_user_id PRIMARY KEY ( id ),
-	CONSTRAINT idx_user UNIQUE ( email ) 
+	CONSTRAINT pk_user_id PRIMARY KEY ( id )
  );
-
-CREATE INDEX idx_user_0 ON "public"."user" ( id, perfil_id );
 
 COMMENT ON TABLE "public"."user" IS 'Tabla de usuarios';
 
@@ -391,16 +313,12 @@ CREATE  TABLE "public".gps_imei (
 	transportista_id     serial  NOT NULL ,
 	proveedor_id         bigint   ,
 	patente_id           bigint   ,
-	imei                 varchar(15)  NOT NULL ,
 	created_at           timestamp DEFAULT CURRENT_TIMESTAMP  ,
 	updated_at           timestamp   ,
 	deleted_at           timestamp   ,
 	CONSTRAINT pk_trn_patentes_id_0 PRIMARY KEY ( id ),
-	CONSTRAINT "unq_trn_patentes_transportista-id_0" UNIQUE ( transportista_id ) ,
-	CONSTRAINT idx_gps_imei UNIQUE ( imei ) 
+	CONSTRAINT "unq_trn_patentes_transportista-id_0" UNIQUE ( transportista_id ) 
  );
-
-CREATE INDEX idx_gps_imei_0 ON "public".gps_imei ( id, transportista_id, proveedor_id, patente_id );
 
 COMMENT ON TABLE "public".gps_imei IS 'Tabla de de IMEI vinculada a la patente y al transportista';
 
@@ -411,8 +329,6 @@ COMMENT ON COLUMN "public".gps_imei.transportista_id IS 'ID del transportista al
 COMMENT ON COLUMN "public".gps_imei.proveedor_id IS 'ID del proveefor de servicio GPS coion el cual se relaciona el IMEI';
 
 COMMENT ON COLUMN "public".gps_imei.patente_id IS 'ID de la patente con la cual se relaciona el IMWI';
-
-COMMENT ON COLUMN "public".gps_imei.imei IS 'C´ódigo IMEI del equipo';
 
 COMMENT ON COLUMN "public".gps_imei.created_at IS 'Timestamp de creacion del registro';
 
@@ -439,8 +355,6 @@ CREATE  TABLE "public".gps_real_time (
 	raw_data             text  NOT NULL ,
 	CONSTRAINT pk_gps_real_time_id PRIMARY KEY ( id )
  );
-
-CREATE INDEX idx_gps_real_time ON "public".gps_real_time ( id, imei_id, transportista_id, proveedor_id, patente_id );
 
 COMMENT ON TABLE "public".gps_real_time IS 'Tabla de almacenamiento de toda la data entrante';
 
@@ -492,8 +406,6 @@ CREATE  TABLE "public".stats_gps_day (
 	CONSTRAINT pk_stat_gps_hour_id_0 PRIMARY KEY ( id )
  );
 
-CREATE INDEX idx_stats_gps_day ON "public".stats_gps_day ( id, imei_id, proveedor_id, transportista_id );
-
 COMMENT ON TABLE "public".stats_gps_day IS 'Almacena las estadísticas por dia de la data enviada por lo sGPS';
 
 COMMENT ON COLUMN "public".stats_gps_day.id IS 'Identificacion unica del registro';
@@ -537,8 +449,6 @@ CREATE  TABLE "public".stats_gps_hour (
 	deleted_at           timestamp   ,
 	CONSTRAINT pk_stat_gps_hour_id PRIMARY KEY ( id )
  );
-
-CREATE INDEX idx_stats_gps_hour ON "public".stats_gps_hour ( id, imei_id, transportista_id, proveedor_id );
 
 COMMENT ON TABLE "public".stats_gps_hour IS 'Almacena las estadísticas por hora de la data enviada por lo sGPS';
 
@@ -584,8 +494,6 @@ CREATE  TABLE "public".stats_gps_month (
 	CONSTRAINT pk_stat_gps_hour_id_2 PRIMARY KEY ( id )
  );
 
-CREATE INDEX idx_stats_gps_month ON "public".stats_gps_month ( id, imei_id, transportista_id, proveedor_id );
-
 COMMENT ON TABLE "public".stats_gps_month IS 'Almacena las estadísticas por mes de la data enviada por lo sGPS';
 
 COMMENT ON COLUMN "public".stats_gps_month.id IS 'Identificacion unica del registro';
@@ -630,8 +538,6 @@ CREATE  TABLE "public".stats_gps_week (
 	CONSTRAINT pk_stat_gps_hour_id_1 PRIMARY KEY ( id )
  );
 
-CREATE INDEX idx_stats_gps_week ON "public".stats_gps_week ( id, imei_id, transportista_id, proveedor_id );
-
 COMMENT ON TABLE "public".stats_gps_week IS 'Almacena las estadísticas por semana de la data enviada por lo sGPS';
 
 COMMENT ON COLUMN "public".stats_gps_week.id IS 'Identificacion unica del registro';
@@ -665,18 +571,11 @@ CREATE OR REPLACE FUNCTION public.delete(hstore, text[])
 AS '$libdir/hstore', $function$hstore_delete_array$function$
 ;
 
-CREATE OR REPLACE FUNCTION public.delete(hstore, text)
+CREATE OR REPLACE FUNCTION public.delete(hstore, hstore)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_delete$function$
-;
-
-CREATE OR REPLACE FUNCTION public.hstore(text[])
- RETURNS hstore
- LANGUAGE c
- IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_from_array$function$
+AS '$libdir/hstore', $function$hstore_delete_hstore$function$
 ;
 
 CREATE OR REPLACE FUNCTION public.hstore(text[], text[])
@@ -686,11 +585,18 @@ CREATE OR REPLACE FUNCTION public.hstore(text[], text[])
 AS '$libdir/hstore', $function$hstore_from_arrays$function$
 ;
 
-CREATE OR REPLACE FUNCTION public.hstore(text, text)
+CREATE OR REPLACE FUNCTION public.hstore(text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_from_array$function$
+;
+
+CREATE OR REPLACE FUNCTION public.hstore(record)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_text$function$
+AS '$libdir/hstore', $function$hstore_from_record$function$
 ;
 
 ALTER TABLE "public".gps_imei ADD CONSTRAINT fk_gps_imei_gps_transportista FOREIGN KEY ( transportista_id ) REFERENCES "public".gps_transportista( id );

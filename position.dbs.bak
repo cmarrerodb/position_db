@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="PostgreSQL" id="Project_2e73320" database="PostgreSQL" >
 	<schema name="public" >
+		<table name="cnf_colores" >
+			<comment><![CDATA[Configuraci´ón de rango de colores de las patentes desarodenadas]]></comment>
+			<column name="id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[Id unico del registro]]></comment>
+			</column>
+			<column name="inicio" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Valor inicial del rango]]></comment>
+			</column>
+			<column name="final" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Valor final del rango]]></comment>
+			</column>
+			<column name="color" type="char" length="7" jt="1" mandatory="y" >
+				<comment><![CDATA[Color a aplicar al rango, en hexadecimal]]></comment>
+			</column>
+			<column name="descripcion" type="varchar" length="35" jt="12" mandatory="y" >
+				<comment><![CDATA[Descripcion de donde aplica el rango]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de moficiacion del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_cnf_colores_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
 		<table name="gb_perfiles" >
 			<comment><![CDATA[Perrfiles dfe usuario]]></comment>
 			<column name="id" type="serial" jt="4" mandatory="y" >
@@ -13,7 +44,7 @@
 				<comment><![CDATA[Permisos del usuario]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -34,14 +65,17 @@
 			<column name="transportista_id" type="serial" jt="4" mandatory="y" >
 				<comment><![CDATA[ID del transportista al cualk pertenece la patente]]></comment>
 			</column>
-			<column name="proveedor_id" type="bigint" jt="-5" mandatory="y" >
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" >
 				<comment><![CDATA[ID del proveefor de servicio GPS coion el cual se relaciona el IMEI]]></comment>
 			</column>
-			<column name="patente_id" type="bigint" jt="-5" mandatory="y" >
+			<column name="patente_id" type="bigint" length="19" decimal="0" jt="-5" >
 				<comment><![CDATA[ID de la patente con la cual se relaciona el IMWI]]></comment>
 			</column>
+			<column name="imei" type="varchar" length="15" jt="12" mandatory="y" >
+				<comment><![CDATA[C´ódigo IMEI del equipo]]></comment>
+			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -55,6 +89,15 @@
 			</index>
 			<index name="unq_trn_patentes_transportista-id_0" unique="UNIQUE" >
 				<column name="transportista_id" />
+			</index>
+			<index name="idx_gps_imei" unique="UNIQUE" >
+				<column name="imei" />
+			</index>
+			<index name="idx_gps_imei_0" unique="NORMAL" >
+				<column name="id" />
+				<column name="transportista_id" />
+				<column name="proveedor_id" />
+				<column name="patente_id" />
 			</index>
 			<fk name="fk_gps_imei_gps_transportista" to_schema="public" to_table="gps_transportista" >
 				<fk_column name="transportista_id" pk="id" />
@@ -81,7 +124,7 @@
 				<comment><![CDATA[Cantidad total de vehiculos que maneja el proveedor del servicio GPS]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creaci´ón del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -98,6 +141,10 @@
 			<comment><![CDATA[Tabla de almacenamiento de toda la data entrante]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificación única del registro]]></comment>
+			</column>
+			<column name="rejected" type="bool" jt="-7" >
+				<defo>false</defo>
+				<comment><![CDATA[Cadena rechazada proveniente del gps]]></comment>
 			</column>
 			<column name="imei_id" type="bigint" jt="-5" >
 				<comment><![CDATA[ID del  IMEI]]></comment>
@@ -130,7 +177,7 @@
 				<comment><![CDATA[Indica si el dato fue enciado con el motor encendido o no; en caso de ser asi, su valor es 1, encaso contrario 0]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -139,8 +186,18 @@
 			<column name="deleted_at" type="timestamp" jt="93" >
 				<comment><![CDATA[Timestamp de borrado lógico del registro]]></comment>
 			</column>
+			<column name="raw_data" type="text" decimal="0" jt="12" mandatory="y" >
+				<comment><![CDATA[Data en bruto proveniente del GPS]]></comment>
+			</column>
 			<index name="pk_gps_real_time_id" unique="PRIMARY_KEY" >
 				<column name="id" />
+			</index>
+			<index name="idx_gps_real_time" unique="NORMAL" >
+				<column name="id" />
+				<column name="imei_id" />
+				<column name="transportista_id" />
+				<column name="proveedor_id" />
+				<column name="patente_id" />
 			</index>
 			<fk name="fk_gps_real_time_gps_transportista" to_schema="public" to_table="gps_transportista" >
 				<fk_column name="transportista_id" pk="id" />
@@ -173,7 +230,7 @@
 				<comment><![CDATA[Cantidad total de vehiculos que maneja el proveedor del servicio GPS]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creaci´ón del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -190,18 +247,23 @@
 			</fk>
 		</table>
 		<table name="stats_gps_day" >
-			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
+			<comment><![CDATA[Almacena las estadísticas por dia de la data enviada por lo sGPS]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
-			<column name="imei_id" type="bigint" jt="-5" mandatory="y" >
+			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
 				<comment><![CDATA[ID del imei]]></comment>
 			</column>
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
 			<column name="dia" type="smallint" jt="5" mandatory="y" >
 				<comment><![CDATA[Día del mes en la cual se genera el resúmen de la estadística, para esa fecha (1 - 31)]]></comment>
+			</column>
+			<column name="motor" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
 			</column>
 			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
@@ -216,7 +278,7 @@
 				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -228,6 +290,12 @@
 			<index name="pk_stat_gps_hour_id_0" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
+			<index name="idx_stats_gps_day" unique="NORMAL" >
+				<column name="id" />
+				<column name="imei_id" />
+				<column name="proveedor_id" />
+				<column name="transportista_id" />
+			</index>
 			<fk name="fk_stats_gps_day_gps_imei" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
 			</fk>
@@ -237,20 +305,25 @@
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
+			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
+				<comment><![CDATA[ID del imei]]></comment>
+			</column>
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
 			<column name="hora" type="smallint" jt="5" mandatory="y" >
 				<comment><![CDATA[Hora del día en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
 			</column>
+			<column name="motor" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			</column>
 			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
 			</column>
 			<column name="latencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
-			</column>
-			<column name="imei_id" type="bigint" jt="-5" mandatory="y" >
-				<comment><![CDATA[ID del imei]]></comment>
 			</column>
 			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
@@ -259,7 +332,7 @@
 				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -271,23 +344,34 @@
 			<index name="pk_stat_gps_hour_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
+			<index name="idx_stats_gps_hour" unique="NORMAL" >
+				<column name="id" />
+				<column name="imei_id" />
+				<column name="transportista_id" />
+				<column name="proveedor_id" />
+			</index>
 			<fk name="fk_stats_gps_hour_gps_imei" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
 			</fk>
 		</table>
-		<table name="stats_gps_week" >
-			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
+		<table name="stats_gps_month" >
+			<comment><![CDATA[Almacena las estadísticas por mes de la data enviada por lo sGPS]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
-			<column name="imei_id" type="bigint" jt="-5" mandatory="y" >
+			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
 				<comment><![CDATA[ID del imei]]></comment>
 			</column>
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
 			<column name="semana" type="smallint" jt="5" mandatory="y" >
 				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha (1 - 52)]]></comment>
+			</column>
+			<column name="motor" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
 			</column>
 			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
@@ -302,7 +386,61 @@
 				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_2" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_stats_gps_month" unique="NORMAL" >
+				<column name="id" />
+				<column name="imei_id" />
+				<column name="transportista_id" />
+				<column name="proveedor_id" />
+			</index>
+			<fk name="fk_stats_gps_week_gps_imei_0" to_schema="public" to_table="gps_imei" >
+				<fk_column name="imei_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_week" >
+			<comment><![CDATA[Almacena las estadísticas por semana de la data enviada por lo sGPS]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
+				<comment><![CDATA[ID del imei]]></comment>
+			</column>
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="semana" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha (1 - 52)]]></comment>
+			</column>
+			<column name="motor" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			</column>
+			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="recibidas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -313,6 +451,12 @@
 			</column>
 			<index name="pk_stat_gps_hour_id_1" unique="PRIMARY_KEY" >
 				<column name="id" />
+			</index>
+			<index name="idx_stats_gps_week" unique="NORMAL" >
+				<column name="id" />
+				<column name="imei_id" />
+				<column name="transportista_id" />
+				<column name="proveedor_id" />
 			</index>
 			<fk name="fk_stats_gps_week_gps_imei" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
@@ -329,14 +473,11 @@
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la data]]></comment>
 			</column>
-			<column name="dia" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Dia de la data (1-31)]]></comment>
-			</column>
 			<column name="cantidad" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -348,7 +489,49 @@
 			<index name="pk_stats_trafic_proveedor_min_id_0" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
+			<index name="idx_stats_trafic_proveedor_day" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
 			<fk name="fk_stats_trafic_proveedor_day_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_trafic_proveedor_hour" >
+			<comment><![CDATA[Stadísitcas de tráfico del proveedor por hora]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificador unico del registro]]></comment>
+			</column>
+			<column name="proveedor_id" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[ID del probeedpr]]></comment>
+			</column>
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la data]]></comment>
+			</column>
+			<column name="hora" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Hora de la data]]></comment>
+			</column>
+			<column name="cantidad" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo>CURRENT_TIMESTAMP</defo>
+				<comment><![CDATA[Timestamp de creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de última actualización del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado logico del registro]]></comment>
+			</column>
+			<index name="pk_stats_trafic_proveedor_min_id_2" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_stats_trafic_proveedor_hour" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
+			<fk name="fk_stats_trafic_proveedor_min_gps_proveedor_0" to_schema="public" to_table="gps_proveedor" >
 				<fk_column name="proveedor_id" pk="id" />
 			</fk>
 		</table>
@@ -369,11 +552,14 @@
 			<column name="minuto" type="smallint" jt="5" mandatory="y" >
 				<comment><![CDATA[Minuto de la data (0 - 59)]]></comment>
 			</column>
+			<column name="motor" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			</column>
 			<column name="cantidad" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -385,6 +571,10 @@
 			<index name="pk_stats_trafic_proveedor_min_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
+			<index name="idx_stats_trafic_proveedor_min" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
 			<fk name="fk_stats_trafic_proveedor_min_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
 				<fk_column name="proveedor_id" pk="id" />
 			</fk>
@@ -394,11 +584,11 @@
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificador unico del registro]]></comment>
 			</column>
-			<column name="proveedor_id" type="integer" jt="4" mandatory="y" >
+			<column name="proveedor_id" type="integer" length="10" decimal="0" jt="4" >
 				<comment><![CDATA[ID del proveedor de servio GPS]]></comment>
 			</column>
-			<column name="fecha" type="date" jt="91" mandatory="y" >
-				<comment><![CDATA[Fecha de la data]]></comment>
+			<column name="anio" type="integer" jt="4" >
+				<comment><![CDATA[Aniode del mes]]></comment>
 			</column>
 			<column name="mes" type="smallint" jt="5" mandatory="y" >
 				<comment><![CDATA[Mes de la data (1-12)]]></comment>
@@ -407,7 +597,7 @@
 				<comment><![CDATA[Cantidad recibidos en la ventana de tiempo]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creación del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -418,6 +608,10 @@
 			</column>
 			<index name="pk_stats_trafic_proveedor_min_id_1" unique="PRIMARY_KEY" >
 				<column name="id" />
+			</index>
+			<index name="idx_stats_trafic_proveedor_month" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
 			</index>
 			<fk name="fk_stats_trafic_proveedor_month_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
 				<fk_column name="proveedor_id" pk="id" />
@@ -431,11 +625,11 @@
 			<column name="transportista_id" type="serial" jt="4" mandatory="y" >
 				<comment><![CDATA[ID del transportista al cualk pertenece la patente]]></comment>
 			</column>
-			<column name="patente" type="char" length="6" jt="1" mandatory="y" >
+			<column name="patente" type="char" length="6" decimal="0" jt="1" >
 				<comment><![CDATA[´´umero de la patente]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
 			</column>
 			<column name="updated_at" type="timestamp" jt="93" >
@@ -450,61 +644,104 @@
 			<index name="unq_trn_patentes_transportista-id" unique="UNIQUE" >
 				<column name="transportista_id" />
 			</index>
+			<index name="idx_trn_patentes" unique="UNIQUE" >
+				<column name="patente" />
+			</index>
 		</table>
-		<table name="uswea" >
+		<table name="user" >
 			<comment><![CDATA[Tabla de usuarios]]></comment>
-			<column name="id" type="serial" jt="4" mandatory="y" >
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" >
+				<type_extra>GENERATED BY DEFAULT AS IDENTITY</type_extra>
 				<comment><![CDATA[ID unico del registro]]></comment>
 			</column>
-			<column name="perfil_id" type="integer" jt="4" mandatory="y" >
+			<column name="perfil_id" type="integer" length="10" decimal="0" jt="4" mandatory="y" >
 				<comment><![CDATA[ID del perfil del usuario]]></comment>
 			</column>
-			<column name="name" type="varchar" length="255" jt="12" mandatory="y" >
+			<column name="name" type="varchar" length="255" decimal="0" jt="12" mandatory="y" >
 				<comment><![CDATA[Nombre dek usuario]]></comment>
 			</column>
-			<column name="email" type="varchar" length="255" jt="12" mandatory="y" >
+			<column name="email" type="varchar" length="255" decimal="0" jt="12" mandatory="y" >
 				<comment><![CDATA[Emaik del usuario]]></comment>
 			</column>
-			<column name="email_verified_at" type="timestamp" jt="93" mandatory="y" >
+			<column name="email_verified_at" type="timestamp" length="29" decimal="6" jt="93" mandatory="y" >
 				<comment><![CDATA[Timestamp de la verificacion del correo]]></comment>
 			</column>
-			<column name="password" type="varchar" length="255" jt="12" mandatory="y" >
+			<column name="password" type="varchar" length="255" decimal="0" jt="12" mandatory="y" >
 				<comment><![CDATA[Clave del usuario]]></comment>
 			</column>
-			<column name="avatar" type="text" jt="12" >
+			<column name="avatar" type="text" decimal="0" jt="12" >
 				<comment><![CDATA[Avatar deñ usuario]]></comment>
 			</column>
-			<column name="remember_token" type="varchar" length="100" jt="12" >
+			<column name="remember_token" type="varchar" length="100" decimal="0" jt="12" >
 				<comment><![CDATA[Recordar toalen de usuario]]></comment>
 			</column>
-			<column name="bloqueado" type="bool" jt="-7" >
+			<column name="bloqueado" type="bool" length="1" decimal="0" jt="-7" >
 				<defo>false</defo>
 				<comment><![CDATA[Indica si el usuario est´á bloqueado o no]]></comment>
 			</column>
-			<column name="old_psw" type="text" jt="12" >
+			<column name="old_psw" type="text" decimal="0" jt="12" >
 				<comment><![CDATA[Clave anterior]]></comment>
 			</column>
-			<column name="two_steps" type="bool" jt="-7" >
+			<column name="two_steps" type="bool" length="1" decimal="0" jt="-7" >
 				<defo>false</defo>
 				<comment><![CDATA[Verificacion de dos factores]]></comment>
 			</column>
-			<column name="created_at" type="timestamp" jt="93" >
-				<defo>current_timestamp</defo>
+			<column name="created_at" type="timestamp" length="29" decimal="6" jt="93" >
+				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[Timestamp de creacion del registro]]></comment>
 			</column>
-			<column name="updated_at" type="timestamp" jt="93" >
+			<column name="updated_at" type="timestamp" length="29" decimal="6" jt="93" >
 				<comment><![CDATA[Timestamp de modificacion del registro]]></comment>
 			</column>
-			<column name="deleted_at" type="timestamp" jt="93" >
+			<column name="deleted_at" type="timestamp" length="29" decimal="6" jt="93" >
 				<comment><![CDATA[Timestamp de borrADO LOGICO del registro]]></comment>
 			</column>
-			<index name="pk_uswea_id" unique="PRIMARY_KEY" >
+			<index name="pk_user_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_uswea_gb_perfiles" to_schema="public" to_table="gb_perfiles" >
+			<index name="idx_user" unique="UNIQUE" >
+				<column name="email" />
+			</index>
+			<index name="idx_user_0" unique="NORMAL" >
+				<column name="id" />
+				<column name="perfil_id" />
+			</index>
+			<fk name="fk_user_gb_perfiles" to_schema="public" to_table="gb_perfiles" >
 				<fk_column name="perfil_id" pk="id" />
 			</fk>
 		</table>
+		<sequence name="gb_perfiles_id_seq" options="START WITH 1" />
+		<sequence name="gb_perfiles_id_seq1" options="START WITH 1" />
+		<sequence name="gps_imei_id_seq" options="START WITH 1" />
+		<sequence name="gps_imei_id_seq1" options="START WITH 1" />
+		<sequence name="gps_imei_transportista_id_seq" options="START WITH 1" />
+		<sequence name="gps_imei_transportista_id_seq1" options="START WITH 1" />
+		<sequence name="gps_proveedor_id_seq" options="START WITH 1" />
+		<sequence name="gps_proveedor_id_seq1" options="START WITH 1" />
+		<sequence name="gps_real_time_id_seq" options="START WITH 1" />
+		<sequence name="gps_real_time_id_seq1" options="START WITH 1" />
+		<sequence name="gps_transportista_id_seq" options="START WITH 1" />
+		<sequence name="gps_transportista_id_seq1" options="START WITH 1" />
+		<sequence name="stats_gps_day_id_seq" options="START WITH 1" />
+		<sequence name="stats_gps_day_id_seq1" options="START WITH 1" />
+		<sequence name="stats_gps_hour_id_seq" options="START WITH 1" />
+		<sequence name="stats_gps_hour_id_seq1" options="START WITH 1" />
+		<sequence name="stats_gps_month_id_seq" options="START WITH 1" />
+		<sequence name="stats_gps_week_id_seq" options="START WITH 1" />
+		<sequence name="stats_gps_week_id_seq1" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_day_id_seq" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_day_id_seq1" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_hour_id_seq" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_hour_id_seq1" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_min_id_seq" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_min_id_seq1" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_month_id_seq" options="START WITH 1" />
+		<sequence name="stats_trafic_proveedor_month_id_seq1" options="START WITH 1" />
+		<sequence name="trn_patentes_id_seq" options="START WITH 1" />
+		<sequence name="trn_patentes_id_seq1" options="START WITH 1" />
+		<sequence name="trn_patentes_transportista_id_seq" options="START WITH 1" />
+		<sequence name="trn_patentes_transportista_id_seq1" options="START WITH 1" />
+		<sequence name="user_id_seq" options="START WITH 1" />
 		<procedure name="akeys" id="Procedure_5a16d89" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION public.akeys(hstore)
  RETURNS text[]
@@ -536,15 +773,15 @@ AS '$libdir/hstore', $function$hstore_defined$function$
 			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="-7" type="bool" />
 		</procedure>
-		<procedure name="delete" id="Procedure_16307c5" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, hstore)
+		<procedure name="delete" id="Procedure_3cda061" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, text)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_delete_hstore$function$
+AS '$libdir/hstore', $function$hstore_delete$function$
 ;]]></string>
 			<input_param name="$1" jt="1111" type="hstore" />
-			<input_param name="$2" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="delete" id="Procedure_55c40f6" isSystem="false" params_known="y" >
@@ -558,15 +795,15 @@ AS '$libdir/hstore', $function$hstore_delete_array$function$
 			<input_param name="$2" jt="2003" type="_text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
-		<procedure name="delete" id="Procedure_3cda061" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, text)
+		<procedure name="delete" id="Procedure_16307c5" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, hstore)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_delete$function$
+AS '$libdir/hstore', $function$hstore_delete_hstore$function$
 ;]]></string>
 			<input_param name="$1" jt="1111" type="hstore" />
-			<input_param name="$2" jt="12" type="text" />
+			<input_param name="$2" jt="1111" type="hstore" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="each" id="Procedure_49ad5df" isSystem="false" params_known="y" >
@@ -797,24 +1034,15 @@ AS '$libdir/hstore', $function$hstore_contains$function$
 			<input_param name="$2" jt="1111" type="hstore" />
 			<result_param name="returnValue" jt="-7" type="bool" />
 		</procedure>
-		<procedure name="hstore" id="Procedure_134a24" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
+		<procedure name="hstore" id="Procedure_120145e" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_record$function$
+AS '$libdir/hstore', $function$hstore_from_text$function$
 ;]]></string>
-			<input_param name="$1" jt="1111" type="record" />
-			<result_param name="returnValue" jt="1111" type="hstore" />
-		</procedure>
-		<procedure name="hstore" id="Procedure_32d78e4" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
- RETURNS hstore
- LANGUAGE c
- IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_from_array$function$
-;]]></string>
-			<input_param name="$1" jt="2003" type="_text" />
+			<input_param name="$1" jt="12" type="text" />
+			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="hstore" id="Procedure_104c8e6" isSystem="false" params_known="y" >
@@ -828,15 +1056,24 @@ AS '$libdir/hstore', $function$hstore_from_arrays$function$
 			<input_param name="$2" jt="2003" type="_text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
-		<procedure name="hstore" id="Procedure_120145e" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
+		<procedure name="hstore" id="Procedure_32d78e4" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_from_array$function$
+;]]></string>
+			<input_param name="$1" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_134a24" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_text$function$
+AS '$libdir/hstore', $function$hstore_from_record$function$
 ;]]></string>
-			<input_param name="$1" jt="12" type="text" />
-			<input_param name="$2" jt="12" type="text" />
+			<input_param name="$1" jt="1111" type="record" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="hstore_cmp" id="Procedure_25476f8" isSystem="false" params_known="y" >
@@ -1136,18 +1373,78 @@ AS '$libdir/hstore', $function$hstore_from_text$function$
 	</schema>
 	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.8.jar" driver_desc="Standard" host="localhost" port="5432" instance="position" user="postgres" passwd="cG9zdGdyZXM=" />
 	<layout name="Default Layout" id="Layout_2a86029" show_relation="columns" >
-		<entity schema="public" name="gps_transportista" color="C1D8EE" x="336" y="96" />
-		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="464" y="624" />
-		<entity schema="public" name="stats_gps_hour" color="C1D8EE" x="528" y="384" />
-		<entity schema="public" name="stats_gps_day" color="3986C1" x="704" y="368" />
-		<entity schema="public" name="stats_gps_week" color="3986C1" x="864" y="352" />
-		<entity schema="public" name="gps_proveedor" color="3986C1" x="64" y="416" />
-		<entity schema="public" name="stats_trafic_proveedor_min" color="C1D8EE" x="48" y="640" />
-		<entity schema="public" name="stats_trafic_proveedor_day" color="3986C1" x="256" y="640" />
-		<entity schema="public" name="uswea" color="C1D8EE" x="672" y="48" />
-		<entity schema="public" name="gb_perfiles" color="C1D8EE" x="864" y="64" />
-		<entity schema="public" name="gps_imei" color="3986C1" x="320" y="336" />
-		<entity schema="public" name="trn_patentes" color="C1D8EE" x="512" y="96" />
-		<entity schema="public" name="gps_real_time" color="C1D8EE" x="64" y="112" />
+		<comment><![CDATA[20231026_Posdition v3]]></comment>
+		<entity schema="public" name="gps_transportista" color="C1D8EE" x="384" y="112" />
+		<entity schema="public" name="gps_proveedor" color="3986C1" x="96" y="464" />
+		<entity schema="public" name="gb_perfiles" color="C1D8EE" x="960" y="80" />
+		<entity schema="public" name="trn_patentes" color="C1D8EE" x="560" y="112" />
+		<entity schema="public" name="gps_real_time" color="C1D8EE" x="112" y="128" />
+		<entity schema="public" name="gps_imei" color="3986C1" x="368" y="352" />
+		<entity schema="public" name="user" color="3986C1" x="752" y="48" />
+		<entity schema="public" name="stats_gps_hour" color="C1D8EE" x="576" y="400" />
+		<entity schema="public" name="stats_gps_day" color="3986C1" x="752" y="384" />
+		<entity schema="public" name="stats_gps_week" color="3986C1" x="912" y="368" />
+		<entity schema="public" name="stats_gps_month" color="3986C1" x="1072" y="352" />
+		<entity schema="public" name="stats_trafic_proveedor_min" color="C1D8EE" x="48" y="672" />
+		<entity schema="public" name="stats_trafic_proveedor_hour" color="3986C1" x="240" y="688" />
+		<entity schema="public" name="stats_trafic_proveedor_day" color="3986C1" x="448" y="688" />
+		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="672" y="688" />
+		<entity schema="public" name="cnf_colores" color="C1D8EE" x="912" y="688" />
+		<script name="gps_real_time" id="Editor_b35dfd" language="SQL" >
+			<string><![CDATA[|CREATE  TABLE "public".gps_real_time ( 
+	id                   bigserial  NOT NULL ,
+	raw_data             text       NOT NULL,
+	imei_id              bigint   ,
+	transportista_id     bigint   ,
+	proveedor_id         bigint   ,
+	patente_id           bigint   ,
+	timestamp_gps        timestamp   ,
+	timestamp_sys        timestamp   ,
+	frecuencia           time   ,
+	latencia             integer  NOT NULL ,
+	ordenada             smallint DEFAULT 1 NOT NULL ,
+	motor                smallint DEFAULT 1 NOT NULL ,
+	created_at           timestamp DEFAULT current_timestamp  ,
+	updated_at           timestamp   ,
+	deleted_at           timestamp   ,
+	CONSTRAINT pk_gps_real_time_id PRIMARY KEY ( id )
+ );
+
+COMMENT ON TABLE "public".gps_real_time IS 'Tabla de almacenamiento de toda la data entrante';
+
+COMMENT ON COLUMN "public".gps_real_time.id IS 'Identificación única del registro';
+
+COMMENT ON COLUMN "public".gps_real_time.imei_id IS 'ID del  IMEI';
+
+COMMENT ON COLUMN "public".gps_real_time.proveedor_id IS 'ID del proveefor del dercivio de GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.patente_id IS 'ID de la patente';
+
+COMMENT ON COLUMN "public".gps_real_time.timestamp_gps IS 'Timestamp en la cual se generó la señal en el GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.timestamp_sys IS 'Timestamp de la recepción de la data del GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.frecuencia IS 'Diferencia de tiempo entre el registro actual y el anterior';
+
+COMMENT ON COLUMN "public".gps_real_time.latencia IS 'Latencia dek GPS';
+
+COMMENT ON COLUMN "public".gps_real_time.ordenada IS 'Indica si la fecha de recpción del datos es posterior al dato anterior, en cuyo caso su valor es 1; si la fecha de recepción es naterior al registro previo, su valor es 0';
+
+COMMENT ON COLUMN "public".gps_real_time.motor IS 'Indica si el dato fue enciado con el motor encendido o no; en caso de ser asi, su valor es 1, encaso contrario 0';
+
+COMMENT ON COLUMN "public".gps_real_time.created_at IS 'Timestamp de creación del registro';
+
+COMMENT ON COLUMN "public".gps_real_time.updated_at IS 'Timestamp de modificación del registro';
+
+COMMENT ON COLUMN "public".gps_real_time.deleted_at IS 'Timestamp de borrado lógico del registro';
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_transportista FOREIGN KEY ( transportista_id ) REFERENCES "public".gps_transportista( id );
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_trn_patentes FOREIGN KEY ( imei_id ) REFERENCES "public".trn_patentes( id );
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_proveedor FOREIGN KEY ( proveedor_id ) REFERENCES "public".gps_proveedor( id );
+
+ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_imei FOREIGN KEY ( patente_id ) REFERENCES "public".gps_imei( id );]]></string>
+		</script>
 	</layout>
 </project>
