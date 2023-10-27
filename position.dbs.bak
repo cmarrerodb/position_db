@@ -302,6 +302,12 @@
 			<fk name="fk_stats_gps_day_gps_imei" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
 			</fk>
+			<fk name="fk_stats_gps_day_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+			<fk name="fk_stats_gps_day_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
+			</fk>
 		</table>
 		<table name="stats_gps_hour" >
 			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
@@ -355,6 +361,12 @@
 			</index>
 			<fk name="fk_stats_gps_hour_gps_imei" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
+			</fk>
+			<fk name="fk_stats_gps_hour_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
+			</fk>
+			<fk name="fk_stats_gps_hour_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
 			</fk>
 		</table>
 		<table name="stats_gps_month" >
@@ -410,6 +422,12 @@
 			<fk name="fk_stats_gps_week_gps_imei_0" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
 			</fk>
+			<fk name="fk_stats_gps_month_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+			<fk name="fk_stats_gps_month_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
+			</fk>
 		</table>
 		<table name="stats_gps_week" >
 			<comment><![CDATA[Almacena las estadísticas por semana de la data enviada por lo sGPS]]></comment>
@@ -463,6 +481,12 @@
 			</index>
 			<fk name="fk_stats_gps_week_gps_imei" to_schema="public" to_table="gps_imei" >
 				<fk_column name="imei_id" pk="id" />
+			</fk>
+			<fk name="fk_stats_gps_week_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+			<fk name="fk_stats_gps_week_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
 			</fk>
 		</table>
 		<table name="stats_trafic_proveedor_day" >
@@ -776,15 +800,15 @@ AS '$libdir/hstore', $function$hstore_defined$function$
 			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="-7" type="bool" />
 		</procedure>
-		<procedure name="delete" id="Procedure_16307c5" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, hstore)
+		<procedure name="delete" id="Procedure_3cda061" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, text)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_delete_hstore$function$
+AS '$libdir/hstore', $function$hstore_delete$function$
 ;]]></string>
 			<input_param name="$1" jt="1111" type="hstore" />
-			<input_param name="$2" jt="1111" type="hstore" />
+			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="delete" id="Procedure_55c40f6" isSystem="false" params_known="y" >
@@ -798,15 +822,15 @@ AS '$libdir/hstore', $function$hstore_delete_array$function$
 			<input_param name="$2" jt="2003" type="_text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
-		<procedure name="delete" id="Procedure_3cda061" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, text)
+		<procedure name="delete" id="Procedure_16307c5" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.delete(hstore, hstore)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_delete$function$
+AS '$libdir/hstore', $function$hstore_delete_hstore$function$
 ;]]></string>
 			<input_param name="$1" jt="1111" type="hstore" />
-			<input_param name="$2" jt="12" type="text" />
+			<input_param name="$2" jt="1111" type="hstore" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="each" id="Procedure_49ad5df" isSystem="false" params_known="y" >
@@ -1037,24 +1061,15 @@ AS '$libdir/hstore', $function$hstore_contains$function$
 			<input_param name="$2" jt="1111" type="hstore" />
 			<result_param name="returnValue" jt="-7" type="bool" />
 		</procedure>
-		<procedure name="hstore" id="Procedure_134a24" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
+		<procedure name="hstore" id="Procedure_120145e" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_record$function$
+AS '$libdir/hstore', $function$hstore_from_text$function$
 ;]]></string>
-			<input_param name="$1" jt="1111" type="record" />
-			<result_param name="returnValue" jt="1111" type="hstore" />
-		</procedure>
-		<procedure name="hstore" id="Procedure_32d78e4" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
- RETURNS hstore
- LANGUAGE c
- IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_from_array$function$
-;]]></string>
-			<input_param name="$1" jt="2003" type="_text" />
+			<input_param name="$1" jt="12" type="text" />
+			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="hstore" id="Procedure_104c8e6" isSystem="false" params_known="y" >
@@ -1068,15 +1083,24 @@ AS '$libdir/hstore', $function$hstore_from_arrays$function$
 			<input_param name="$2" jt="2003" type="_text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
-		<procedure name="hstore" id="Procedure_120145e" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
+		<procedure name="hstore" id="Procedure_32d78e4" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_from_array$function$
+;]]></string>
+			<input_param name="$1" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_134a24" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_text$function$
+AS '$libdir/hstore', $function$hstore_from_record$function$
 ;]]></string>
-			<input_param name="$1" jt="12" type="text" />
-			<input_param name="$2" jt="12" type="text" />
+			<input_param name="$1" jt="1111" type="record" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="hstore_cmp" id="Procedure_25476f8" isSystem="false" params_known="y" >
@@ -1383,16 +1407,16 @@ AS '$libdir/hstore', $function$hstore_from_text$function$
 		<entity schema="public" name="trn_patentes" color="C1D8EE" x="560" y="112" />
 		<entity schema="public" name="gps_real_time" color="C1D8EE" x="112" y="128" />
 		<entity schema="public" name="user" color="3986C1" x="752" y="48" />
-		<entity schema="public" name="stats_gps_hour" color="C1D8EE" x="576" y="400" />
-		<entity schema="public" name="stats_gps_day" color="3986C1" x="752" y="384" />
-		<entity schema="public" name="stats_gps_week" color="3986C1" x="912" y="368" />
-		<entity schema="public" name="stats_gps_month" color="3986C1" x="1072" y="352" />
 		<entity schema="public" name="stats_trafic_proveedor_min" color="C1D8EE" x="48" y="672" />
 		<entity schema="public" name="stats_trafic_proveedor_hour" color="3986C1" x="240" y="688" />
 		<entity schema="public" name="stats_trafic_proveedor_day" color="3986C1" x="448" y="688" />
 		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="672" y="688" />
 		<entity schema="public" name="gps_imei" color="3986C1" x="368" y="352" />
 		<entity schema="public" name="cnf_colores" color="C1D8EE" x="912" y="688" />
+		<entity schema="public" name="stats_gps_hour" color="C1D8EE" x="576" y="400" />
+		<entity schema="public" name="stats_gps_day" color="3986C1" x="752" y="384" />
+		<entity schema="public" name="stats_gps_week" color="3986C1" x="912" y="368" />
+		<entity schema="public" name="stats_gps_month" color="3986C1" x="1072" y="352" />
 		<script name="gps_real_time" id="Editor_b35dfd" language="SQL" >
 			<string><![CDATA[|CREATE  TABLE "public".gps_real_time ( 
 	id                   bigserial  NOT NULL ,
