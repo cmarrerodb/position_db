@@ -249,36 +249,88 @@
 				<fk_column name="id" pk="transportista_id" />
 			</fk>
 		</table>
-		<table name="stats_gps_day" >
-			<comment><![CDATA[Almacena las estadísticas por dia de la data enviada por lo sGPS]]></comment>
+		<table name="stats_gps_dia_proveedor" >
+			<comment><![CDATA[Almacena las estadísticas por dia de la data enviada por lo sGPS transportista]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
-			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
-				<comment><![CDATA[ID del imei]]></comment>
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" >
+				<comment><![CDATA[Id del prtoveedor del servicio de GPS]]></comment>
 			</column>
-			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="dia" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Hora del día en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
+			</column>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
+			</column>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
+			</column>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>CURRENT_TIMESTAMP</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_4" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_stats_gps_hour_4" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
+			<fk name="fk_stats_gps_hora_proveedor_gps_proveedor_0" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_dia_transportista" >
+			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por transportista]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
 			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
 			<column name="dia" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Día del mes en la cual se genera el resúmen de la estadística, para esa fecha (1 - 31)]]></comment>
+				<comment><![CDATA[Dia del mes en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
 			</column>
-			<column name="motor" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
 			</column>
-			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
 			</column>
 			<column name="latencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
 			</column>
-			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
 			</column>
-			<column name="recibidas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
 				<defo>CURRENT_TIMESTAMP</defo>
@@ -293,52 +345,96 @@
 			<index name="pk_stat_gps_hour_id_0" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<index name="idx_stats_gps_day" unique="NORMAL" >
+			<index name="idx_stats_gps_hour_0" unique="NORMAL" >
 				<column name="id" />
-				<column name="imei_id" />
-				<column name="proveedor_id" />
 				<column name="transportista_id" />
 			</index>
-			<fk name="fk_stats_gps_day_gps_imei" to_schema="public" to_table="gps_imei" >
-				<fk_column name="imei_id" pk="id" />
-			</fk>
-			<fk name="fk_stats_gps_day_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
-				<fk_column name="proveedor_id" pk="id" />
-			</fk>
-			<fk name="fk_stats_gps_day_gps_transportista" to_schema="public" to_table="gps_transportista" >
+			<fk name="fk_stats_gps_hour_gps_transportista_0" to_schema="public" to_table="gps_transportista" >
 				<fk_column name="transportista_id" pk="id" />
 			</fk>
 		</table>
-		<table name="stats_gps_hour" >
-			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS]]></comment>
+		<table name="stats_gps_hora_proveedor" >
+			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS transportista]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
-			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
-				<comment><![CDATA[ID del imei]]></comment>
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" >
+				<comment><![CDATA[Id del prtoveedor del servicio de GPS]]></comment>
 			</column>
-			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
-			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
 			<column name="hora" type="smallint" jt="5" mandatory="y" >
 				<comment><![CDATA[Hora del día en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
 			</column>
-			<column name="motor" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
 			</column>
-			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
 			</column>
 			<column name="latencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
 			</column>
-			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
 			</column>
-			<column name="recibidas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>CURRENT_TIMESTAMP</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_3" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_stats_gps_hour_3" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
+			<fk name="fk_stats_gps_hora_proveedor_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_hora_transportista" >
+			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS transportista]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="hora" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Hora del día en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
+			</column>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
+			</column>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
+			</column>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
 				<defo>CURRENT_TIMESTAMP</defo>
@@ -355,50 +451,94 @@
 			</index>
 			<index name="idx_stats_gps_hour" unique="NORMAL" >
 				<column name="id" />
-				<column name="imei_id" />
 				<column name="transportista_id" />
-				<column name="proveedor_id" />
 			</index>
-			<fk name="fk_stats_gps_hour_gps_imei" to_schema="public" to_table="gps_imei" >
-				<fk_column name="imei_id" pk="id" />
-			</fk>
 			<fk name="fk_stats_gps_hour_gps_transportista" to_schema="public" to_table="gps_transportista" >
 				<fk_column name="transportista_id" pk="id" />
 			</fk>
-			<fk name="fk_stats_gps_hour_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
-				<fk_column name="proveedor_id" pk="id" />
-			</fk>
 		</table>
-		<table name="stats_gps_month" >
-			<comment><![CDATA[Almacena las estadísticas por mes de la data enviada por lo sGPS]]></comment>
+		<table name="stats_gps_mes_proveedor" >
+			<comment><![CDATA[Almacena las estadísticas por mes de la data enviada por lo sGPS transportista]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
-			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
-				<comment><![CDATA[ID del imei]]></comment>
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" >
+				<comment><![CDATA[Id del prtoveedor del servicio de GPS]]></comment>
 			</column>
-			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
-			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
-			<column name="semana" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha (1 - 52)]]></comment>
+			<column name="mes" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Mes del año en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
 			</column>
-			<column name="motor" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
 			</column>
-			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
 			</column>
 			<column name="latencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
 			</column>
-			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
 			</column>
-			<column name="recibidas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>CURRENT_TIMESTAMP</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_6" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_stats_gps_hour_6" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
+			<fk name="fk_stats_gps_hora_proveedor_gps_proveedor_2" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_mes_transportista" >
+			<comment><![CDATA[Almacena las estadísticas por mes de la data enviada por transportista]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="mes" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Mes del año en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
+			</column>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
+			</column>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
+			</column>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
 				<defo>CURRENT_TIMESTAMP</defo>
@@ -413,52 +553,96 @@
 			<index name="pk_stat_gps_hour_id_2" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<index name="idx_stats_gps_month" unique="NORMAL" >
+			<index name="idx_stats_gps_hour_2" unique="NORMAL" >
 				<column name="id" />
-				<column name="imei_id" />
 				<column name="transportista_id" />
-				<column name="proveedor_id" />
 			</index>
-			<fk name="fk_stats_gps_week_gps_imei_0" to_schema="public" to_table="gps_imei" >
-				<fk_column name="imei_id" pk="id" />
-			</fk>
-			<fk name="fk_stats_gps_month_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
-				<fk_column name="proveedor_id" pk="id" />
-			</fk>
-			<fk name="fk_stats_gps_month_gps_transportista" to_schema="public" to_table="gps_transportista" >
+			<fk name="fk_stats_gps_hour_gps_transportista_2" to_schema="public" to_table="gps_transportista" >
 				<fk_column name="transportista_id" pk="id" />
 			</fk>
 		</table>
-		<table name="stats_gps_week" >
-			<comment><![CDATA[Almacena las estadísticas por semana de la data enviada por lo sGPS]]></comment>
+		<table name="stats_gps_semana_proveedor" >
+			<comment><![CDATA[Almacena las estadísticas por semana de la data enviada por lo sGPS transportista]]></comment>
 			<column name="id" type="bigserial" jt="-5" mandatory="y" >
 				<comment><![CDATA[Identificacion unica del registro]]></comment>
 			</column>
-			<column name="imei_id" type="bigint" length="19" decimal="0" jt="-5" >
-				<comment><![CDATA[ID del imei]]></comment>
+			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" >
+				<comment><![CDATA[Id del prtoveedor del servicio de GPS]]></comment>
 			</column>
-			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
-			<column name="proveedor_id" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="fecha" type="date" jt="91" mandatory="y" >
 				<comment><![CDATA[Fecha de la hora]]></comment>
 			</column>
 			<column name="semana" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha (1 - 52)]]></comment>
+				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
 			</column>
-			<column name="motor" type="smallint" jt="5" mandatory="y" >
-				<comment><![CDATA[Estado de ignici´ón del motor: 0 apagado  1 encendido]]></comment>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
 			</column>
-			<column name="frecuencia" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha]]></comment>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
 			</column>
 			<column name="latencia" type="integer" jt="4" mandatory="y" >
 				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
 			</column>
-			<column name="ordenadas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros ordenados durante esa hora del día, para esa fecha]]></comment>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
 			</column>
-			<column name="recibidas" type="integer" jt="4" mandatory="y" >
-				<comment><![CDATA[Cantidad de registros recibidos durante esa hora del ´ia, para esa fecha]]></comment>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
+				<defo>CURRENT_TIMESTAMP</defo>
+				<comment><![CDATA[Timestamp de la creación del registro]]></comment>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp de la última modificación del registro]]></comment>
+			</column>
+			<column name="deleted_at" type="timestamp" jt="93" >
+				<comment><![CDATA[Timestamp del borrado lógico del registro]]></comment>
+			</column>
+			<index name="pk_stat_gps_hour_id_5" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_stats_gps_hour_5" unique="NORMAL" >
+				<column name="id" />
+				<column name="proveedor_id" />
+			</index>
+			<fk name="fk_stats_gps_hora_proveedor_gps_proveedor_1" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
+		</table>
+		<table name="stats_gps_semana_transportista" >
+			<comment><![CDATA[Almacena las estadísticas por semana de la data enviada por transportista]]></comment>
+			<column name="id" type="bigserial" jt="-5" mandatory="y" >
+				<comment><![CDATA[Identificacion unica del registro]]></comment>
+			</column>
+			<column name="transportista_id" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="fecha" type="date" jt="91" mandatory="y" >
+				<comment><![CDATA[Fecha de la hora]]></comment>
+			</column>
+			<column name="semana" type="smallint" jt="5" mandatory="y" >
+				<comment><![CDATA[Semana del año en la cual se genera el resúmen de la estadística, para esa fecha]]></comment>
+			</column>
+			<column name="frecuencia_motor_on" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor encendido]]></comment>
+			</column>
+			<column name="frecuencia_motor_off" type="time" jt="92" mandatory="y" >
+				<comment><![CDATA[Frecuencia promedio del envio de datos durante esa hora del día, para esa fecha con el motor apagado]]></comment>
+			</column>
+			<column name="latencia" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Latencia promedio durante esa hora del día, para esa fecha]]></comment>
+			</column>
+			<column name="q_patetentes_no_ign" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin eventos de ignidi´ón en las ultimas 24 horas]]></comment>
+			</column>
+			<column name="q_patentes_no_deteccion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Patentes sin evcentos las ´últimas 24 horas]]></comment>
+			</column>
+			<column name="q_desordenadas" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Cantidad de registros desordenados durante esa hora del día, para esa fecha]]></comment>
 			</column>
 			<column name="created_at" type="timestamp" jt="93" mandatory="y" >
 				<defo>CURRENT_TIMESTAMP</defo>
@@ -473,19 +657,11 @@
 			<index name="pk_stat_gps_hour_id_1" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<index name="idx_stats_gps_week" unique="NORMAL" >
+			<index name="idx_stats_gps_hour_1" unique="NORMAL" >
 				<column name="id" />
-				<column name="imei_id" />
 				<column name="transportista_id" />
-				<column name="proveedor_id" />
 			</index>
-			<fk name="fk_stats_gps_week_gps_imei" to_schema="public" to_table="gps_imei" >
-				<fk_column name="imei_id" pk="id" />
-			</fk>
-			<fk name="fk_stats_gps_week_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
-				<fk_column name="proveedor_id" pk="id" />
-			</fk>
-			<fk name="fk_stats_gps_week_gps_transportista" to_schema="public" to_table="gps_transportista" >
+			<fk name="fk_stats_gps_hour_gps_transportista_1" to_schema="public" to_table="gps_transportista" >
 				<fk_column name="transportista_id" pk="id" />
 			</fk>
 		</table>
@@ -1401,37 +1577,37 @@ AS '$libdir/hstore', $function$hstore_from_text$function$
 	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.8.jar" driver_desc="Standard" host="localhost" port="5432" instance="position" user="postgres" passwd="cG9zdGdyZXM=" />
 	<layout name="Default Layout" id="Layout_2a86029" show_relation="columns" >
 		<comment><![CDATA[20231026_Posdition v3]]></comment>
-		<entity schema="public" name="gb_perfiles" color="C1D8EE" x="1104" y="112" />
-		<entity schema="public" name="stats_gps_day" color="3986C1" x="896" y="496" />
-		<entity schema="public" name="stats_gps_week" color="3986C1" x="1056" y="480" />
-		<entity schema="public" name="stats_gps_month" color="3986C1" x="1216" y="464" />
-		<entity schema="public" name="user" color="3986C1" x="896" y="80" />
-		<entity schema="public" name="stats_gps_hour" color="C1D8EE" x="720" y="512" />
-		<entity schema="public" name="gps_real_time" color="C1D8EE" x="336" y="192" />
-		<entity schema="public" name="cnf_colores" color="C1D8EE" x="560" y="160" />
-		<entity schema="public" name="gps_imei" color="3986C1" x="64" y="736" />
-		<entity schema="public" name="gps_proveedor" color="3986C1" x="64" y="544" />
-		<entity schema="public" name="gps_transportista" color="C1D8EE" x="48" y="336" />
-		<entity schema="public" name="trn_patentes" color="C1D8EE" x="48" y="128" />
-		<entity schema="public" name="stats_trafic_proveedor_min" color="C1D8EE" x="560" y="832" />
-		<entity schema="public" name="stats_trafic_proveedor_hour" color="3986C1" x="736" y="832" />
-		<entity schema="public" name="stats_trafic_proveedor_day" color="3986C1" x="944" y="832" />
-		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="1136" y="816" />
-		<group name="Serguridad" color="CC3333" >
+		<entity schema="public" name="gps_imei" color="3986C1" x="64" y="752" />
+		<entity schema="public" name="gps_proveedor" color="3986C1" x="64" y="560" />
+		<entity schema="public" name="gps_transportista" color="C1D8EE" x="48" y="352" />
+		<entity schema="public" name="trn_patentes" color="C1D8EE" x="48" y="144" />
+		<entity schema="public" name="cnf_colores" color="C1D8EE" x="496" y="112" />
+		<entity schema="public" name="gps_real_time" color="C1D8EE" x="336" y="208" />
+		<entity schema="public" name="stats_gps_dia_transportista" color="3986C1" x="528" y="640" />
+		<entity schema="public" name="stats_gps_semana_transportista" color="3986C1" x="752" y="640" />
+		<entity schema="public" name="stats_gps_mes_transportista" color="3986C1" x="992" y="640" />
+		<entity schema="public" name="stats_trafic_proveedor_hour" color="3986C1" x="800" y="112" />
+		<entity schema="public" name="stats_gps_hora_proveedor" color="3986C1" x="320" y="960" />
+		<entity schema="public" name="stats_gps_dia_proveedor" color="3986C1" x="544" y="960" />
+		<entity schema="public" name="stats_gps_semana_proveedor" color="3986C1" x="768" y="960" />
+		<entity schema="public" name="stats_gps_mes_proveedor" color="3986C1" x="992" y="960" />
+		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="1200" y="128" />
+		<entity schema="public" name="stats_trafic_proveedor_day" color="3986C1" x="1008" y="112" />
+		<entity schema="public" name="stats_trafic_proveedor_min" color="C1D8EE" x="640" y="112" />
+		<entity schema="public" name="stats_gps_hora_transportista" color="C1D8EE" x="320" y="656" />
+		<entity schema="public" name="user" color="3986C1" x="1440" y="80" />
+		<entity schema="public" name="gb_perfiles" color="C1D8EE" x="1584" y="80" />
+		<group name="Serguridad" color="FF00FF" >
 			<comment><![CDATA[Grupo con las tablas de seguridad]]></comment>
 			<entity schema="public" name="user" />
 			<entity schema="public" name="gb_perfiles" />
 		</group>
 		<group name="Estad´ísticas" color="4D3399" >
 			<comment><![CDATA[Grupo de tablas de estadisticazs]]></comment>
-			<entity schema="public" name="stats_gps_hour" />
-			<entity schema="public" name="stats_gps_day" />
 			<entity schema="public" name="stats_trafic_proveedor_month" />
 			<entity schema="public" name="stats_trafic_proveedor_min" />
 			<entity schema="public" name="stats_trafic_proveedor_hour" />
 			<entity schema="public" name="stats_trafic_proveedor_day" />
-			<entity schema="public" name="stats_gps_week" />
-			<entity schema="public" name="stats_gps_month" />
 		</group>
 		<group name="Maestros" color="C4E0F9" >
 			<comment><![CDATA[Grupo de tablas maestras]]></comment>
@@ -1439,6 +1615,18 @@ AS '$libdir/hstore', $function$hstore_from_text$function$
 			<entity schema="public" name="gps_transportista" />
 			<entity schema="public" name="gps_proveedor" />
 			<entity schema="public" name="gps_imei" />
+		</group>
+		<group name="Dashboard" color="CC3333" >
+			<comment><![CDATA[Dashboard
+]]></comment>
+			<entity schema="public" name="stats_gps_hora_transportista" />
+			<entity schema="public" name="stats_gps_dia_transportista" />
+			<entity schema="public" name="stats_gps_semana_transportista" />
+			<entity schema="public" name="stats_gps_mes_transportista" />
+			<entity schema="public" name="stats_gps_hora_proveedor" />
+			<entity schema="public" name="stats_gps_dia_proveedor" />
+			<entity schema="public" name="stats_gps_semana_proveedor" />
+			<entity schema="public" name="stats_gps_mes_proveedor" />
 		</group>
 		<script name="gps_real_time" id="Editor_b35dfd" language="SQL" >
 			<string><![CDATA[|CREATE  TABLE "public".gps_real_time ( 
