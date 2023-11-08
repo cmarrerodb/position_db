@@ -1,8 +1,13 @@
 CREATE VIEW v_desordenadas_dia AS
 SELECT
+	desordenadas_dia.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	desordenadas_dia.fecha, 
 	desordenadas_dia.dia, 
@@ -30,9 +35,14 @@ FROM
 ----------------
 CREATE VIEW v_desordenadas_hora AS
 SELECT
+	desordenadas_hora.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	desordenadas_hora.fecha, 
 	desordenadas_hora.hora, 
@@ -60,9 +70,14 @@ FROM
 ----------------
 CREATE VIEW v_desordenadas_mes AS
 SELECT
+	desordenadas_mes.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	desordenadas_mes.fecha, 
 	desordenadas_mes.mes, 
@@ -90,9 +105,14 @@ FROM
 ----------------
 CREATE VIEW v_desordenadas_semana AS
 SELECT
+	desordenadas_semana.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	desordenadas_semana.fecha, 
 	desordenadas_semana.semana, 
@@ -120,9 +140,14 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_dia_patente AS
 SELECT
+	stats_gps_dia_patente.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	stats_gps_dia_patente.fecha, 
 	stats_gps_dia_patente.dia, 
@@ -155,9 +180,14 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_hora_patente AS
 SELECT
+	stats_gps_hora_patente.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	stats_gps_hora_patente.fecha, 
 	stats_gps_hora_patente.hora, 
@@ -189,9 +219,14 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_mes_patente AS
 SELECT
+	stats_gps_mes_patente.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	stats_gps_mes_patente.fecha, 
 	stats_gps_mes_patente.mes, 
@@ -223,9 +258,14 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_semana_patente AS
 SELECT
+	stats_gps_semana_patente.id,
+	trn_transportista.id as transportista_id, 
 	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
 	gps_proveedor.razon_social as proveedor, 
+	trn_patentes.id as patente_id, 
 	trn_patentes.patente, 
+	gps_imei.id as imei_id, 
 	gps_imei.imei, 
 	stats_gps_semana_patente.fecha, 
 	stats_gps_semana_patente.semana, 
@@ -258,6 +298,11 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_dia_transportista AS
 SELECT
+	stats_gps_dia_transportista.id,
+	trn_transportista.id as transportista_id, 
+	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
+	gps_proveedor.razon_social as proveedor, 
 	trn_transportista.razon_social AS transportista, 
 	gps_proveedor.razon_social AS proveedor, 
 	stats_gps_dia_transportista.fecha, 
@@ -283,6 +328,11 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_hora_transportista AS
 SELECT
+	stats_gps_hora_transportista.id,
+	trn_transportista.id as transportista_id, 
+	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
+	gps_proveedor.razon_social as proveedor, 
 	trn_transportista.razon_social AS transportista, 
 	gps_proveedor.razon_social AS proveedor, 
 	stats_gps_hora_transportista.fecha, 
@@ -333,6 +383,11 @@ FROM
 ---------------
 CREATE VIEW v_stats_gps_semana_transportista AS
 SELECT
+	stats_gps_semana_transportista.id,
+	trn_transportista.id as transportista_id, 
+	trn_transportista.razon_social as transportista, 
+	gps_proveedor.id as proveedor_id, 
+	gps_proveedor.razon_social as proveedor, 
 	trn_transportista.razon_social AS transportista, 
 	gps_proveedor.razon_social AS proveedor, 
 	stats_gps_semana_transportista.fecha, 
@@ -355,10 +410,12 @@ FROM
 		stats_gps_semana_transportista.proveedor_id = gps_proveedor.id
 	ORDER BY trn_transportista.razon_social,gps_proveedor.razon_social,stats_gps_semana_transportista.fecha,
 	stats_gps_semana_transportista.semana
----------------
+---------------MOSCA
 CREATE VIEW v_stats_trafic_proveedor_day AS
 SELECT
-	gps_proveedor.razon_social AS proveedor, 
+	stats_trafic_proveedor_day.id,
+	gps_proveedor.id as proveedor_id, 
+	gps_proveedor.razon_social as proveedor, 
 	stats_trafic_proveedor_day.fecha, 
 	stats_trafic_proveedor_day.cantidad
 FROM
