@@ -600,9 +600,6 @@
 			<index name="pk_gps_transportista_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_gps_transportista_trn_patentes" to_schema="public" to_table="trn_patentes" >
-				<fk_column name="id" pk="transportista_id" />
-			</fk>
 		</table>
 		<table name="logs" >
 			<column name="id" type="bigint" length="19" decimal="0" jt="-5" mandatory="y" >
@@ -1384,7 +1381,7 @@
 			<index name="pk_trn_patentes_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<index name="unq_trn_patentes_transportista-id" unique="UNIQUE" >
+			<index name="unq_trn_patentes_transportista-id" unique="NORMAL" >
 				<column name="transportista_id" />
 			</index>
 			<index name="idx_trn_patentes" unique="UNIQUE" >
@@ -1395,6 +1392,9 @@
 			</fk>
 			<fk name="fk_updated" to_schema="public" to_table="users" >
 				<fk_column name="updated_by" pk="id" />
+			</fk>
+			<fk name="fk_trn_patentes_gps_transportista" to_schema="public" to_table="gps_transportista" >
+				<fk_column name="transportista_id" pk="id" />
 			</fk>
 		</table>
 		<table name="trn_tipo_transporte" >
