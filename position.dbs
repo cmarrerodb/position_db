@@ -1407,6 +1407,640 @@
 				<fk_column name="perfil_id" pk="id" />
 			</fk>
 		</table>
+		<view name="v_cant_imei_proveedores" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    count(gps_imei.imei) AS cant_imei
+   FROM ((gps_imei
+     LEFT JOIN gps_proveedor ON ((gps_imei.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN trn_patentes ON ((gps_imei.patente_id = trn_patentes.id)))
+  GROUP BY gps_proveedor.id, gps_proveedor.razon_social
+  ORDER BY (count(gps_imei.imei)) DESC;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="cant_imei" type="bigint" />
+		</view>
+		<view name="v_cant_imei_transportistas" >
+			<view_script><![CDATA[ SELECT trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    count(gps_imei.imei) AS cant_imei
+   FROM (gps_imei
+     LEFT JOIN trn_transportista ON ((gps_imei.transportista_id = trn_transportista.id)))
+  GROUP BY trn_transportista.id, trn_transportista.razon_social
+  ORDER BY (count(gps_imei.imei)) DESC;]]></view_script>
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="cant_imei" type="bigint" />
+		</view>
+		<view name="v_cant_patentes_proveedores" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    count(trn_patentes.patente) AS cant_patentes
+   FROM ((gps_imei
+     LEFT JOIN gps_proveedor ON ((gps_imei.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN trn_patentes ON ((gps_imei.patente_id = trn_patentes.id)))
+  GROUP BY gps_proveedor.id, gps_proveedor.razon_social
+  ORDER BY (count(trn_patentes.patente)) DESC;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="cant_patentes" type="bigint" />
+		</view>
+		<view name="v_cant_patentes_transportistas" >
+			<view_script><![CDATA[ SELECT trn_patentes.transportista_id,
+    trn_transportista.razon_social AS transportista,
+    count(trn_patentes.patente) AS cant_patentes
+   FROM (trn_patentes
+     LEFT JOIN trn_transportista ON ((trn_patentes.transportista_id = trn_transportista.id)))
+  GROUP BY trn_patentes.transportista_id, trn_transportista.razon_social
+  ORDER BY (count(trn_patentes.patente)) DESC;]]></view_script>
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="cant_patentes" type="bigint" />
+		</view>
+		<view name="v_desordenadas_dia" >
+			<view_script><![CDATA[ SELECT desordenadas_dia.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    desordenadas_dia.fecha,
+    desordenadas_dia.dia,
+    desordenadas_dia.cant
+   FROM ((((desordenadas_dia
+     LEFT JOIN trn_transportista ON ((desordenadas_dia.transportista_id = trn_transportista.id)))
+     LEFT JOIN trn_patentes ON ((desordenadas_dia.patente_id = trn_patentes.id)))
+     LEFT JOIN gps_proveedor ON ((desordenadas_dia.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((desordenadas_dia.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei, desordenadas_dia.fecha, desordenadas_dia.dia;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="dia" type="smallint" />
+			<column name="cant" type="integer" />
+		</view>
+		<view name="v_desordenadas_hora" >
+			<view_script><![CDATA[ SELECT desordenadas_hora.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    desordenadas_hora.fecha,
+    desordenadas_hora.hora,
+    desordenadas_hora.cant
+   FROM ((((desordenadas_hora
+     LEFT JOIN trn_transportista ON ((desordenadas_hora.transportista_id = trn_transportista.id)))
+     LEFT JOIN trn_patentes ON ((desordenadas_hora.patente_id = trn_patentes.id)))
+     LEFT JOIN gps_proveedor ON ((desordenadas_hora.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((desordenadas_hora.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei, desordenadas_hora.fecha, desordenadas_hora.hora;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="hora" type="smallint" />
+			<column name="cant" type="integer" />
+		</view>
+		<view name="v_desordenadas_mes" >
+			<view_script><![CDATA[ SELECT desordenadas_mes.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    desordenadas_mes.fecha,
+    desordenadas_mes.mes,
+    desordenadas_mes.cant
+   FROM ((((desordenadas_mes
+     LEFT JOIN trn_transportista ON ((desordenadas_mes.transportista_id = trn_transportista.id)))
+     LEFT JOIN trn_patentes ON ((desordenadas_mes.patente_id = trn_patentes.id)))
+     LEFT JOIN gps_proveedor ON ((desordenadas_mes.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((desordenadas_mes.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei, desordenadas_mes.fecha, desordenadas_mes.mes;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="mes" type="smallint" />
+			<column name="cant" type="integer" />
+		</view>
+		<view name="v_desordenadas_semana" >
+			<view_script><![CDATA[ SELECT desordenadas_semana.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    desordenadas_semana.fecha,
+    desordenadas_semana.semana,
+    desordenadas_semana.cant
+   FROM ((((desordenadas_semana
+     LEFT JOIN trn_transportista ON ((desordenadas_semana.transportista_id = trn_transportista.id)))
+     LEFT JOIN trn_patentes ON ((desordenadas_semana.patente_id = trn_patentes.id)))
+     LEFT JOIN gps_proveedor ON ((desordenadas_semana.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((desordenadas_semana.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei, desordenadas_semana.fecha, desordenadas_semana.semana;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="semana" type="smallint" />
+			<column name="cant" type="integer" />
+		</view>
+		<view name="v_imei_patentes_transportistas" >
+			<view_script><![CDATA[ SELECT trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id,
+    gps_imei.imei
+   FROM ((gps_imei
+     LEFT JOIN trn_patentes ON ((gps_imei.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((gps_imei.transportista_id = trn_transportista.id)))
+  ORDER BY trn_transportista.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="id" type="bigint" />
+			<column name="imei" type="varchar" />
+		</view>
+		<view name="v_imei_patentes_transportistas_proveedores" >
+			<view_script><![CDATA[ SELECT trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id,
+    gps_imei.imei
+   FROM (((gps_imei
+     LEFT JOIN gps_proveedor ON ((gps_imei.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN trn_patentes ON ((gps_imei.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((gps_imei.transportista_id = trn_transportista.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="id" type="bigint" />
+			<column name="imei" type="varchar" />
+		</view>
+		<view name="v_imei_proveedores" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id,
+    gps_imei.imei
+   FROM ((gps_imei
+     LEFT JOIN gps_proveedor ON ((gps_imei.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN trn_patentes ON ((gps_imei.patente_id = trn_patentes.id)))
+  ORDER BY gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="id" type="bigint" />
+			<column name="imei" type="varchar" />
+		</view>
+		<view name="v_imei_transportistas" >
+			<view_script><![CDATA[ SELECT trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_imei.id AS imei_id,
+    gps_imei.imei
+   FROM (gps_imei
+     LEFT JOIN trn_transportista ON ((gps_imei.transportista_id = trn_transportista.id)))
+  ORDER BY trn_transportista.razon_social, gps_imei.imei;]]></view_script>
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+		</view>
+		<view name="v_patentes_proveedores" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente
+   FROM ((gps_imei
+     LEFT JOIN gps_proveedor ON ((gps_imei.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN trn_patentes ON ((gps_imei.patente_id = trn_patentes.id)))
+  ORDER BY gps_proveedor.razon_social, trn_patentes.patente;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+		</view>
+		<view name="v_stats_gps_dia_patente" >
+			<view_script><![CDATA[ SELECT stats_gps_dia_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_dia_patente.fecha,
+    stats_gps_dia_patente.dia,
+    stats_gps_dia_patente.frecuencia_motor_on,
+    stats_gps_dia_patente.frecuencia_motor_off,
+    stats_gps_dia_patente.latencia,
+    stats_gps_dia_patente.q_patetentes_no_ign,
+    stats_gps_dia_patente.q_patentes_no_deteccion,
+    stats_gps_dia_patente.q_desordenadas
+   FROM ((((stats_gps_dia_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_dia_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_dia_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_dia_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_dia_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="dia" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_dia_transportista" >
+			<view_script><![CDATA[ SELECT stats_gps_dia_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_dia_transportista.fecha,
+    stats_gps_dia_transportista.dia,
+    stats_gps_dia_transportista.frecuencia_motor_on,
+    stats_gps_dia_transportista.frecuencia_motor_off,
+    stats_gps_dia_transportista.latencia,
+    stats_gps_dia_transportista.q_patetentes_no_ign,
+    stats_gps_dia_transportista.q_patentes_no_deteccion,
+    stats_gps_dia_transportista.q_desordenadas
+   FROM ((stats_gps_dia_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_dia_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_dia_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_dia_transportista.fecha, stats_gps_dia_transportista.dia;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="dia" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_hora_patente" >
+			<view_script><![CDATA[ SELECT stats_gps_hora_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_hora_patente.fecha,
+    stats_gps_hora_patente.hora,
+    stats_gps_hora_patente.frecuencia_motor_on,
+    stats_gps_hora_patente.frecuencia_motor_off,
+    stats_gps_hora_patente.latencia,
+    stats_gps_hora_patente.q_patetentes_no_ign,
+    stats_gps_hora_patente.q_patentes_no_deteccion,
+    stats_gps_hora_patente.q_desordenadas
+   FROM ((((stats_gps_hora_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_hora_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_hora_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_hora_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_hora_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="hora" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_hora_transportista" >
+			<view_script><![CDATA[ SELECT stats_gps_hora_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_hora_transportista.fecha,
+    stats_gps_hora_transportista.hora,
+    stats_gps_hora_transportista.frecuencia_motor_on,
+    stats_gps_hora_transportista.frecuencia_motor_off,
+    stats_gps_hora_transportista.latencia,
+    stats_gps_hora_transportista.q_patetentes_no_ign,
+    stats_gps_hora_transportista.q_patentes_no_deteccion,
+    stats_gps_hora_transportista.q_desordenadas
+   FROM ((stats_gps_hora_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_hora_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_hora_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_hora_transportista.fecha, stats_gps_hora_transportista.hora;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="hora" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_mes_patente" >
+			<view_script><![CDATA[ SELECT stats_gps_mes_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_mes_patente.fecha,
+    stats_gps_mes_patente.mes,
+    stats_gps_mes_patente.frecuencia_motor_on,
+    stats_gps_mes_patente.frecuencia_motor_off,
+    stats_gps_mes_patente.latencia,
+    stats_gps_mes_patente.q_patetentes_no_ign,
+    stats_gps_mes_patente.q_patentes_no_deteccion,
+    stats_gps_mes_patente.q_desordenadas
+   FROM ((((stats_gps_mes_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_mes_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_mes_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_mes_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_mes_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="mes" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_mes_transportista" >
+			<view_script><![CDATA[ SELECT trn_transportista.razon_social AS transportista,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_mes_transportista.fecha,
+    stats_gps_mes_transportista.mes,
+    stats_gps_mes_transportista.frecuencia_motor_on,
+    stats_gps_mes_transportista.frecuencia_motor_off,
+    stats_gps_mes_transportista.latencia,
+    stats_gps_mes_transportista.q_patetentes_no_ign,
+    stats_gps_mes_transportista.q_patentes_no_deteccion,
+    stats_gps_mes_transportista.q_desordenadas
+   FROM ((stats_gps_mes_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_mes_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_mes_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_mes_transportista.fecha, stats_gps_mes_transportista.mes;]]></view_script>
+			<column name="transportista" type="char" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="mes" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_semana_patente" >
+			<view_script><![CDATA[ SELECT stats_gps_semana_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_semana_patente.fecha,
+    stats_gps_semana_patente.semana,
+    stats_gps_semana_patente.frecuencia_motor_on,
+    stats_gps_semana_patente.frecuencia_motor_off,
+    stats_gps_semana_patente.latencia,
+    stats_gps_semana_patente.q_patetentes_no_ign,
+    stats_gps_semana_patente.q_patentes_no_deteccion,
+    stats_gps_semana_patente.q_desordenadas
+   FROM ((((stats_gps_semana_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_semana_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_semana_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_semana_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_semana_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patente_id" type="bigint" />
+			<column name="patente" type="varchar" />
+			<column name="imei_id" type="bigint" />
+			<column name="imei" type="varchar" />
+			<column name="fecha" type="date" />
+			<column name="semana" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_semana_transportista" >
+			<view_script><![CDATA[ SELECT stats_gps_semana_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_semana_transportista.fecha,
+    stats_gps_semana_transportista.semana,
+    stats_gps_semana_transportista.frecuencia_motor_on,
+    stats_gps_semana_transportista.frecuencia_motor_off,
+    stats_gps_semana_transportista.latencia,
+    stats_gps_semana_transportista.q_patetentes_no_ign,
+    stats_gps_semana_transportista.q_patentes_no_deteccion,
+    stats_gps_semana_transportista.q_desordenadas
+   FROM ((stats_gps_semana_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_semana_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_semana_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_semana_transportista.fecha, stats_gps_semana_transportista.semana;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="semana" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_trafic_proveedor_day" >
+			<view_script><![CDATA[ SELECT stats_trafic_proveedor_day.id,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_trafic_proveedor_day.fecha,
+    stats_trafic_proveedor_day.cantidad
+   FROM (stats_trafic_proveedor_day
+     JOIN gps_proveedor ON ((stats_trafic_proveedor_day.proveedor_id = gps_proveedor.id)));]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="cantidad" type="integer" />
+		</view>
+		<view name="v_stats_trafic_proveedor_hour" >
+			<view_script><![CDATA[ SELECT stats_trafic_proveedor_hour.id,
+    stats_trafic_proveedor_hour.proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_trafic_proveedor_hour.fecha,
+    stats_trafic_proveedor_hour.hora,
+    stats_trafic_proveedor_hour.cantidad
+   FROM (stats_trafic_proveedor_hour
+     LEFT JOIN gps_proveedor ON ((stats_trafic_proveedor_hour.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_trafic_proveedor_hour.fecha, stats_trafic_proveedor_hour.hora;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="hora" type="smallint" />
+			<column name="cantidad" type="integer" />
+		</view>
+		<view name="v_stats_trafic_proveedor_min" >
+			<view_script><![CDATA[ SELECT stats_trafic_proveedor_min.id,
+    stats_trafic_proveedor_min.proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_trafic_proveedor_min.fecha,
+    stats_trafic_proveedor_min.hora,
+    stats_trafic_proveedor_min.minuto,
+    stats_trafic_proveedor_min.cantidad
+   FROM (stats_trafic_proveedor_min
+     LEFT JOIN gps_proveedor ON ((stats_trafic_proveedor_min.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_trafic_proveedor_min.fecha, stats_trafic_proveedor_min.hora, stats_trafic_proveedor_min.minuto;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="hora" type="smallint" />
+			<column name="minuto" type="smallint" />
+			<column name="cantidad" type="integer" />
+		</view>
+		<view name="v_stats_trafic_proveedor_month" >
+			<view_script><![CDATA[ SELECT stats_trafic_proveedor_month.id,
+    stats_trafic_proveedor_month.proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_trafic_proveedor_month.anio,
+    stats_trafic_proveedor_month.mes,
+    stats_trafic_proveedor_month.cantidad
+   FROM (stats_trafic_proveedor_month
+     LEFT JOIN gps_proveedor ON ((stats_trafic_proveedor_month.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_trafic_proveedor_month.anio, stats_trafic_proveedor_month.mes;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="anio" type="integer" />
+			<column name="mes" type="smallint" />
+			<column name="cantidad" type="integer" />
+		</view>
+		<view name="v_transportistas_patentes" >
+			<view_script><![CDATA[ SELECT trn_patentes.id,
+    trn_patentes.transportista_id,
+    trn_transportista.razon_social AS transportista,
+    trn_patentes.patente
+   FROM (trn_patentes
+     LEFT JOIN trn_transportista ON ((trn_patentes.transportista_id = trn_transportista.id)))
+  ORDER BY trn_transportista.razon_social, trn_patentes.patente;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="patente" type="varchar" />
+		</view>
 		<sequence name="cnf_colores_id_seq" options="START WITH 1" />
 		<sequence name="cnf_tipo_accion_id_seq" options="START WITH 1" />
 		<sequence name="cnf_vistas_id_seq" options="START WITH 1" />
@@ -2145,5 +2779,32 @@ ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_proveedor
 ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_imei FOREIGN KEY ( patente_id ) REFERENCES "public".gps_imei( id );]]></string>
 		</script>
 	</layout>
-	<layout name="Vistas" id="Layout_524b212" show_relation="columns" />
+	<layout name="Vistas" id="Layout_10ff8dc" show_relation="columns" >
+		<entity schema="public" name="v_desordenadas_hora" color="3986C1" x="1120" y="400" />
+		<entity schema="public" name="v_stats_gps_dia_transportista" color="3986C1" x="1824" y="48" />
+		<entity schema="public" name="v_stats_gps_hora_patente" color="3986C1" x="1584" y="48" />
+		<entity schema="public" name="v_stats_gps_semana_patente" color="3986C1" x="1344" y="432" />
+		<entity schema="public" name="v_stats_trafic_proveedor_min" color="3986C1" x="48" y="544" />
+		<entity schema="public" name="v_stats_trafic_proveedor_month" color="3986C1" x="288" y="768" />
+		<entity schema="public" name="v_transportistas_patentes" color="3986C1" x="48" y="768" />
+		<entity schema="public" name="v_cant_imei_proveedores" color="3986C1" x="80" y="64" />
+		<entity schema="public" name="v_cant_patentes_proveedores" color="3986C1" x="432" y="64" />
+		<entity schema="public" name="v_cant_patentes_transportistas" color="3986C1" x="624" y="64" />
+		<entity schema="public" name="v_patentes_proveedores" color="3986C1" x="64" y="176" />
+		<entity schema="public" name="v_imei_patentes_transportistas" color="3986C1" x="48" y="336" />
+		<entity schema="public" name="v_imei_proveedores" color="3986C1" x="272" y="176" />
+		<entity schema="public" name="v_cant_imei_transportistas" color="3986C1" x="256" y="64" />
+		<entity schema="public" name="v_imei_patentes_transportistas_proveedores" color="3986C1" x="432" y="176" />
+		<entity schema="public" name="v_imei_transportistas" color="3986C1" x="272" y="368" />
+		<entity schema="public" name="v_stats_gps_dia_patente" color="3986C1" x="704" y="176" />
+		<entity schema="public" name="v_desordenadas_dia" color="3986C1" x="912" y="176" />
+		<entity schema="public" name="v_stats_trafic_proveedor_hour" color="3986C1" x="288" y="544" />
+		<entity schema="public" name="v_stats_gps_semana_transportista" color="3986C1" x="464" y="400" />
+		<entity schema="public" name="v_stats_trafic_proveedor_day" color="3986C1" x="512" y="752" />
+		<entity schema="public" name="v_desordenadas_mes" color="3986C1" x="720" y="528" />
+		<entity schema="public" name="v_stats_gps_hora_transportista" color="3986C1" x="896" y="464" />
+		<entity schema="public" name="v_stats_gps_mes_transportista" color="3986C1" x="896" y="736" />
+		<entity schema="public" name="v_stats_gps_mes_patente" color="3986C1" x="1344" y="48" />
+		<entity schema="public" name="v_desordenadas_semana" color="3986C1" x="1104" y="96" />
+	</layout>
 </project>
