@@ -532,13 +532,13 @@
 				<column name="patente_id" />
 			</index>
 			<fk name="fk_gps_real_time_trn_patentes" to_schema="public" to_table="trn_patentes" >
-				<fk_column name="imei_id" pk="id" />
+				<fk_column name="patente_id" pk="id" />
 			</fk>
 			<fk name="fk_gps_real_time_gps_proveedor" to_schema="public" to_table="gps_proveedor" >
 				<fk_column name="proveedor_id" pk="id" />
 			</fk>
 			<fk name="fk_gps_real_time_gps_imei" to_schema="public" to_table="gps_imei" >
-				<fk_column name="patente_id" pk="id" />
+				<fk_column name="imei_id" pk="id" />
 			</fk>
 			<fk name="fk_gps_real_time_gps_transportista" to_schema="public" to_table="trn_transportista" >
 				<fk_column name="transportista_id" pk="id" />
@@ -2188,24 +2188,15 @@ AS '$libdir/hstore', $function$ghstore_union$function$
 			<input_param name="$2" jt="1111" type="internal" />
 			<result_param name="returnValue" jt="1111" type="ghstore" />
 		</procedure>
-		<procedure name="hstore" id="Procedure_1ea3deb" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
+		<procedure name="hstore" id="Procedure_5c26328" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_record$function$
+AS '$libdir/hstore', $function$hstore_from_text$function$
 ;]]></string>
-			<input_param name="$1" jt="1111" type="record" />
-			<result_param name="returnValue" jt="1111" type="hstore" />
-		</procedure>
-		<procedure name="hstore" id="Procedure_5bb951e" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
- RETURNS hstore
- LANGUAGE c
- IMMUTABLE PARALLEL SAFE STRICT
-AS '$libdir/hstore', $function$hstore_from_array$function$
-;]]></string>
-			<input_param name="$1" jt="2003" type="_text" />
+			<input_param name="$1" jt="12" type="text" />
+			<input_param name="$2" jt="12" type="text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="hstore" id="Procedure_5345c5f" isSystem="false" params_known="y" >
@@ -2219,15 +2210,24 @@ AS '$libdir/hstore', $function$hstore_from_arrays$function$
 			<input_param name="$2" jt="2003" type="_text" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
-		<procedure name="hstore" id="Procedure_5c26328" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text, text)
+		<procedure name="hstore" id="Procedure_5bb951e" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(text[])
+ RETURNS hstore
+ LANGUAGE c
+ IMMUTABLE PARALLEL SAFE STRICT
+AS '$libdir/hstore', $function$hstore_from_array$function$
+;]]></string>
+			<input_param name="$1" jt="2003" type="_text" />
+			<result_param name="returnValue" jt="1111" type="hstore" />
+		</procedure>
+		<procedure name="hstore" id="Procedure_1ea3deb" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION public.hstore(record)
  RETURNS hstore
  LANGUAGE c
  IMMUTABLE PARALLEL SAFE
-AS '$libdir/hstore', $function$hstore_from_text$function$
+AS '$libdir/hstore', $function$hstore_from_record$function$
 ;]]></string>
-			<input_param name="$1" jt="12" type="text" />
-			<input_param name="$2" jt="12" type="text" />
+			<input_param name="$1" jt="1111" type="record" />
 			<result_param name="returnValue" jt="1111" type="hstore" />
 		</procedure>
 		<procedure name="hstore_cmp" id="Procedure_a0a0dc" isSystem="false" params_known="y" >
