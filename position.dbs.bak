@@ -1106,6 +1106,9 @@
 				<column name="id" options="ASC" />
 				<column name="patentes_total" options="ASC" />
 			</index>
+			<fk name="fk_stats_gps_proveedor_dia" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
 		</table>
 		<table name="stats_gps_proveedor_hora" >
 			<comment><![CDATA[Almacena las estadísticas por hora de la data enviada por lo sGPS transportista]]></comment>
@@ -1268,6 +1271,9 @@
 				<column name="id" options="ASC" />
 				<column name="patentes_total" options="ASC" />
 			</index>
+			<fk name="fk_stats_gps_proveedor_semana" to_schema="public" to_table="gps_proveedor" >
+				<fk_column name="proveedor_id" pk="id" />
+			</fk>
 		</table>
 		<table name="stats_gps_semana_patente" >
 			<comment><![CDATA[Almacena las estadísticas por semana de la data POR PATENTE]]></comment>
@@ -1616,6 +1622,12 @@
 			<fk name="fk_trn_patentes_gps_transportista" to_schema="public" to_table="trn_transportista" >
 				<fk_column name="transportista_id" pk="id" />
 			</fk>
+			<fk name="fk_trn_patentes_trn_marcas" to_schema="public" to_table="trn_marcas" >
+				<fk_column name="marca_id" pk="id" />
+			</fk>
+			<fk name="fk_trn_patentes" to_schema="public" to_table="trn_tipo_transporte" >
+				<fk_column name="tipo_id" pk="id" />
+			</fk>
 		</table>
 		<table name="trn_tipo_transporte" >
 			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
@@ -1738,6 +1750,9 @@
 				<column name="perfil_id" />
 			</index>
 			<fk name="fk_user_gb_perfiles" to_schema="public" to_table="gb_perfiles" >
+				<fk_column name="perfil_id" pk="id" />
+			</fk>
+			<fk name="fk_users_cnf_perfiles" to_schema="public" to_table="cnf_perfiles" >
 				<fk_column name="perfil_id" pk="id" />
 			</fk>
 		</table>
@@ -2047,6 +2062,38 @@
 			<column name="q_patentes_no_deteccion" type="integer" />
 			<column name="q_desordenadas" type="integer" />
 		</view>
+		<view name="v_stats_gps_dia_transportista" >
+			<view_script><![CDATA[ SELECT stats_gps_dia_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_dia_transportista.fecha,
+    stats_gps_dia_transportista.dia,
+    stats_gps_dia_transportista.frecuencia_motor_on,
+    stats_gps_dia_transportista.frecuencia_motor_off,
+    stats_gps_dia_transportista.latencia,
+    stats_gps_dia_transportista.q_patetentes_no_ign,
+    stats_gps_dia_transportista.q_patentes_no_deteccion,
+    stats_gps_dia_transportista.q_desordenadas
+   FROM ((stats_gps_dia_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_dia_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_dia_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_dia_transportista.fecha, stats_gps_dia_transportista.dia;]]></view_script>
+			<column name="id" type="bigint" />
+			<column name="transportista_id" type="integer" />
+			<column name="transportista" type="char" />
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="fecha" type="date" />
+			<column name="dia" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
 		<view name="v_stats_gps_hora_patente" >
 			<view_script><![CDATA[ SELECT stats_gps_hora_patente.id,
     trn_transportista.id AS transportista_id,
@@ -2182,6 +2229,114 @@
 			<column name="proveedor" type="char" />
 			<column name="fecha" type="date" />
 			<column name="mes" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_proveedor_dia" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_dia.patentes_total,
+    stats_gps_proveedor_dia.fecha,
+    stats_gps_proveedor_dia.dia,
+    stats_gps_proveedor_dia.frecuencia_motor_on,
+    stats_gps_proveedor_dia.frecuencia_motor_off,
+    stats_gps_proveedor_dia.latencia,
+    stats_gps_proveedor_dia.q_patetentes_no_ign,
+    stats_gps_proveedor_dia.q_patentes_no_deteccion,
+    stats_gps_proveedor_dia.q_desordenadas
+   FROM (stats_gps_proveedor_dia
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_dia.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_dia.fecha, stats_gps_proveedor_dia.dia;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patentes_total" type="bigint" />
+			<column name="fecha" type="date" />
+			<column name="dia" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_proveedor_hora" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_hora.patentes_total,
+    stats_gps_proveedor_hora.fecha,
+    stats_gps_proveedor_hora.hora,
+    stats_gps_proveedor_hora.frecuencia_motor_on,
+    stats_gps_proveedor_hora.frecuencia_motor_off,
+    stats_gps_proveedor_hora.latencia,
+    stats_gps_proveedor_hora.q_patetentes_no_ign,
+    stats_gps_proveedor_hora.q_patentes_no_deteccion,
+    stats_gps_proveedor_hora.q_desordenadas
+   FROM (stats_gps_proveedor_hora
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_hora.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_hora.fecha, stats_gps_proveedor_hora.hora;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patentes_total" type="bigint" />
+			<column name="fecha" type="date" />
+			<column name="hora" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_proveedor_mes" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_mes.patentes_total,
+    stats_gps_proveedor_mes.fecha,
+    stats_gps_proveedor_mes.mes,
+    stats_gps_proveedor_mes.frecuencia_motor_on,
+    stats_gps_proveedor_mes.frecuencia_motor_off,
+    stats_gps_proveedor_mes.latencia,
+    stats_gps_proveedor_mes.q_patetentes_no_ign,
+    stats_gps_proveedor_mes.q_patentes_no_deteccion,
+    stats_gps_proveedor_mes.q_desordenadas
+   FROM (stats_gps_proveedor_mes
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_mes.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_mes.fecha, stats_gps_proveedor_mes.mes;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patentes_total" type="bigint" />
+			<column name="fecha" type="date" />
+			<column name="mes" type="smallint" />
+			<column name="frecuencia_motor_on" type="time" />
+			<column name="frecuencia_motor_off" type="time" />
+			<column name="latencia" type="integer" />
+			<column name="q_patetentes_no_ign" type="integer" />
+			<column name="q_patentes_no_deteccion" type="integer" />
+			<column name="q_desordenadas" type="integer" />
+		</view>
+		<view name="v_stats_gps_proveedor_semana" >
+			<view_script><![CDATA[ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_semana.patentes_total,
+    stats_gps_proveedor_semana.fecha,
+    stats_gps_proveedor_semana.semana,
+    stats_gps_proveedor_semana.frecuencia_motor_on,
+    stats_gps_proveedor_semana.frecuencia_motor_off,
+    stats_gps_proveedor_semana.latencia,
+    stats_gps_proveedor_semana.q_patetentes_no_ign,
+    stats_gps_proveedor_semana.q_patentes_no_deteccion,
+    stats_gps_proveedor_semana.q_desordenadas
+   FROM (stats_gps_proveedor_semana
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_semana.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_semana.fecha, stats_gps_proveedor_semana.semana;]]></view_script>
+			<column name="proveedor_id" type="integer" />
+			<column name="proveedor" type="char" />
+			<column name="patentes_total" type="bigint" />
+			<column name="fecha" type="date" />
+			<column name="semana" type="smallint" />
 			<column name="frecuencia_motor_on" type="time" />
 			<column name="frecuencia_motor_off" type="time" />
 			<column name="latencia" type="integer" />
@@ -2846,7 +3001,6 @@ AS '$libdir/hstore', $function$hstore_from_text$function$
 		<entity schema="public" name="gps_real_time" color="C1D8EE" x="288" y="368" />
 		<entity schema="public" name="logs" color="3986C1" x="1584" y="96" />
 		<entity schema="public" name="desordenadas_hora" color="C1D8EE" x="1488" y="544" />
-		<entity schema="public" name="trn_patentes" color="C1D8EE" x="48" y="224" />
 		<entity schema="public" name="stats_gps_dia_patente" color="3986C1" x="720" y="816" />
 		<entity schema="public" name="stats_gps_semana_transportista" color="3986C1" x="736" y="496" />
 		<entity schema="public" name="stats_gps_mes_transportista" color="3986C1" x="944" y="480" />
@@ -2868,6 +3022,7 @@ AS '$libdir/hstore', $function$hstore_from_text$function$
 		<entity schema="public" name="stats_trafic_proveedor_month" color="3986C1" x="1056" y="128" />
 		<entity schema="public" name="users" color="3986C1" x="1296" y="96" />
 		<entity schema="public" name="cnf_colores" color="C1D8EE" x="2160" y="80" />
+		<entity schema="public" name="trn_patentes" color="C1D8EE" x="48" y="224" />
 		<group name="Serguridad" color="FF00FF" >
 			<comment><![CDATA[Grupo con las tablas de seguridad]]></comment>
 			<entity schema="public" name="users" />
@@ -3100,30 +3255,35 @@ ALTER TABLE "public".gps_real_time ADD CONSTRAINT fk_gps_real_time_gps_imei FORE
 		</script>
 	</layout>
 	<layout name="Vistas" id="Layout_10ff8dc" show_relation="columns" >
-		<entity schema="public" name="v_desordenadas_hora" color="3986C1" x="1120" y="400" />
-		<entity schema="public" name="v_stats_gps_hora_patente" color="3986C1" x="1584" y="48" />
-		<entity schema="public" name="v_stats_gps_semana_patente" color="3986C1" x="1344" y="432" />
-		<entity schema="public" name="v_stats_trafic_proveedor_min" color="3986C1" x="48" y="544" />
-		<entity schema="public" name="v_stats_trafic_proveedor_month" color="3986C1" x="288" y="768" />
-		<entity schema="public" name="v_transportistas_patentes" color="3986C1" x="48" y="768" />
-		<entity schema="public" name="v_cant_imei_proveedores" color="3986C1" x="80" y="64" />
-		<entity schema="public" name="v_cant_patentes_proveedores" color="3986C1" x="432" y="64" />
-		<entity schema="public" name="v_cant_patentes_transportistas" color="3986C1" x="624" y="64" />
-		<entity schema="public" name="v_patentes_proveedores" color="3986C1" x="64" y="176" />
-		<entity schema="public" name="v_imei_patentes_transportistas" color="3986C1" x="48" y="336" />
-		<entity schema="public" name="v_imei_proveedores" color="3986C1" x="272" y="176" />
-		<entity schema="public" name="v_cant_imei_transportistas" color="3986C1" x="256" y="64" />
-		<entity schema="public" name="v_imei_patentes_transportistas_proveedores" color="3986C1" x="432" y="176" />
-		<entity schema="public" name="v_imei_transportistas" color="3986C1" x="272" y="368" />
-		<entity schema="public" name="v_stats_gps_dia_patente" color="3986C1" x="704" y="176" />
-		<entity schema="public" name="v_desordenadas_dia" color="3986C1" x="912" y="176" />
-		<entity schema="public" name="v_stats_trafic_proveedor_hour" color="3986C1" x="288" y="544" />
-		<entity schema="public" name="v_stats_gps_semana_transportista" color="3986C1" x="464" y="400" />
-		<entity schema="public" name="v_stats_trafic_proveedor_day" color="3986C1" x="512" y="752" />
-		<entity schema="public" name="v_desordenadas_mes" color="3986C1" x="720" y="528" />
-		<entity schema="public" name="v_stats_gps_hora_transportista" color="3986C1" x="896" y="464" />
-		<entity schema="public" name="v_stats_gps_mes_transportista" color="3986C1" x="896" y="736" />
-		<entity schema="public" name="v_stats_gps_mes_patente" color="3986C1" x="1344" y="48" />
-		<entity schema="public" name="v_desordenadas_semana" color="3986C1" x="1104" y="96" />
+		<entity schema="public" name="v_desordenadas_hora" color="3986C1" x="1136" y="400" />
+		<entity schema="public" name="v_stats_gps_semana_patente" color="3986C1" x="1360" y="432" />
+		<entity schema="public" name="v_stats_trafic_proveedor_min" color="3986C1" x="64" y="544" />
+		<entity schema="public" name="v_stats_trafic_proveedor_month" color="3986C1" x="304" y="768" />
+		<entity schema="public" name="v_transportistas_patentes" color="3986C1" x="64" y="768" />
+		<entity schema="public" name="v_cant_imei_proveedores" color="3986C1" x="96" y="64" />
+		<entity schema="public" name="v_cant_patentes_proveedores" color="3986C1" x="448" y="64" />
+		<entity schema="public" name="v_cant_patentes_transportistas" color="3986C1" x="640" y="64" />
+		<entity schema="public" name="v_patentes_proveedores" color="3986C1" x="80" y="176" />
+		<entity schema="public" name="v_imei_patentes_transportistas" color="3986C1" x="64" y="336" />
+		<entity schema="public" name="v_imei_proveedores" color="3986C1" x="288" y="176" />
+		<entity schema="public" name="v_cant_imei_transportistas" color="3986C1" x="272" y="64" />
+		<entity schema="public" name="v_imei_patentes_transportistas_proveedores" color="3986C1" x="448" y="176" />
+		<entity schema="public" name="v_imei_transportistas" color="3986C1" x="288" y="368" />
+		<entity schema="public" name="v_stats_gps_dia_patente" color="3986C1" x="720" y="176" />
+		<entity schema="public" name="v_desordenadas_dia" color="3986C1" x="928" y="176" />
+		<entity schema="public" name="v_stats_trafic_proveedor_hour" color="3986C1" x="304" y="544" />
+		<entity schema="public" name="v_stats_trafic_proveedor_day" color="3986C1" x="528" y="752" />
+		<entity schema="public" name="v_desordenadas_mes" color="3986C1" x="736" y="528" />
+		<entity schema="public" name="v_stats_gps_hora_transportista" color="3986C1" x="912" y="464" />
+		<entity schema="public" name="v_stats_gps_mes_transportista" color="3986C1" x="912" y="736" />
+		<entity schema="public" name="v_stats_gps_mes_patente" color="3986C1" x="1360" y="48" />
+		<entity schema="public" name="v_desordenadas_semana" color="3986C1" x="1120" y="96" />
+		<entity schema="public" name="v_stats_gps_semana_transportista" color="3986C1" x="496" y="432" />
+		<entity schema="public" name="v_stats_gps_dia_transportista" color="3986C1" x="240" y="912" />
+		<entity schema="public" name="v_stats_gps_proveedor_dia" color="3986C1" x="432" y="912" />
+		<entity schema="public" name="v_stats_gps_proveedor_hora" color="3986C1" x="624" y="896" />
+		<entity schema="public" name="v_stats_gps_proveedor_mes" color="3986C1" x="1120" y="720" />
+		<entity schema="public" name="v_stats_gps_proveedor_semana" color="3986C1" x="1344" y="784" />
+		<entity schema="public" name="v_stats_gps_hora_patente" color="3986C1" x="48" y="928" />
 	</layout>
 </project>
