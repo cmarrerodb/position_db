@@ -1,3 +1,16 @@
+ DROP VIEW v_stats_gps_semana_transportista;
+ DROP VIEW v_stats_gps_semana_patente;
+ DROP VIEW v_stats_gps_proveedor_semana;
+ DROP VIEW v_stats_gps_proveedor_mes;
+ DROP VIEW v_stats_gps_proveedor_hora;
+ DROP VIEW v_stats_gps_proveedor_dia;
+ DROP VIEW v_stats_gps_mes_transportista;
+ DROP VIEW v_stats_gps_mes_patente;
+ DROP VIEW v_stats_gps_hora_transportista;
+ DROP VIEW v_stats_gps_hora_patente;
+ DROP VIEW v_stats_gps_dia_transportista;
+ DROP VIEW v_stats_gps_dia_patente;
+
  CREATE v_stats_gps_dia_patente VIEW AS 
  SELECT stats_gps_dia_patente.id,
     trn_transportista.id AS transportista_id,
