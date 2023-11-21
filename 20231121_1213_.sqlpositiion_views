@@ -1,0 +1,237 @@
+ CREATE v_stats_gps_dia_patente VIEW AS 
+ SELECT stats_gps_dia_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_dia_patente.fecha,
+    stats_gps_dia_patente.dia,
+    stats_gps_dia_patente.frecuencia_motor_on,
+    stats_gps_dia_patente.frecuencia_motor_off,
+    stats_gps_dia_patente.latencia,
+    stats_gps_dia_patente.q_patetentes_no_ign,
+    stats_gps_dia_patente.q_patentes_no_deteccion,
+    stats_gps_dia_patente.q_desordenadas
+   FROM ((((stats_gps_dia_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_dia_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_dia_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_dia_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_dia_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;
+
+ CREATE v_stats_gps_dia_transportista VIEW AS 
+ SELECT stats_gps_dia_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_dia_transportista.fecha,
+    stats_gps_dia_transportista.dia,
+    stats_gps_dia_transportista.frecuencia_motor_on,
+    stats_gps_dia_transportista.frecuencia_motor_off,
+    stats_gps_dia_transportista.latencia,
+    stats_gps_dia_transportista.q_patetentes_no_ign,
+    stats_gps_dia_transportista.q_patentes_no_deteccion,
+    stats_gps_dia_transportista.q_desordenadas
+   FROM ((stats_gps_dia_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_dia_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_dia_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_dia_transportista.fecha, stats_gps_dia_transportista.dia;
+
+ CREATE VIEW v_stats_gps_hora_patente AS 
+ SELECT stats_gps_hora_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_hora_patente.fecha,
+    stats_gps_hora_patente.hora,
+    stats_gps_hora_patente.frecuencia_motor_on,
+    stats_gps_hora_patente.frecuencia_motor_off,
+    stats_gps_hora_patente.latencia,
+    stats_gps_hora_patente.q_patetentes_no_ign,
+    stats_gps_hora_patente.q_patentes_no_deteccion,
+    stats_gps_hora_patente.q_desordenadas
+   FROM ((((stats_gps_hora_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_hora_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_hora_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_hora_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_hora_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;
+
+ CREATE VIEW v_stats_gps_hora_transportista AS 
+ SELECT stats_gps_hora_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_hora_transportista.fecha,
+    stats_gps_hora_transportista.hora,
+    stats_gps_hora_transportista.frecuencia_motor_on,
+    stats_gps_hora_transportista.frecuencia_motor_off,
+    stats_gps_hora_transportista.latencia,
+    stats_gps_hora_transportista.q_patetentes_no_ign,
+    stats_gps_hora_transportista.q_patentes_no_deteccion,
+    stats_gps_hora_transportista.q_desordenadas
+   FROM ((stats_gps_hora_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_hora_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_hora_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_hora_transportista.fecha, stats_gps_hora_transportista.hora;
+
+ CREATE VIEW v_stats_gps_mes_patente AS 
+ SELECT stats_gps_mes_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_mes_patente.fecha,
+    stats_gps_mes_patente.mes,
+    stats_gps_mes_patente.frecuencia_motor_on,
+    stats_gps_mes_patente.frecuencia_motor_off,
+    stats_gps_mes_patente.latencia,
+    stats_gps_mes_patente.q_patetentes_no_ign,
+    stats_gps_mes_patente.q_patentes_no_deteccion,
+    stats_gps_mes_patente.q_desordenadas
+   FROM ((((stats_gps_mes_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_mes_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_mes_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_mes_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_mes_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;
+
+ CREATE VIEW v_stats_gps_mes_transportista AS 
+ SELECT trn_transportista.razon_social AS transportista,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_mes_transportista.fecha,
+    stats_gps_mes_transportista.mes,
+    stats_gps_mes_transportista.frecuencia_motor_on,
+    stats_gps_mes_transportista.frecuencia_motor_off,
+    stats_gps_mes_transportista.latencia,
+    stats_gps_mes_transportista.q_patetentes_no_ign,
+    stats_gps_mes_transportista.q_patentes_no_deteccion,
+    stats_gps_mes_transportista.q_desordenadas
+   FROM ((stats_gps_mes_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_mes_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_mes_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_mes_transportista.fecha, stats_gps_mes_transportista.mes;
+
+ CREATE VIEW v_stats_gps_proveedor_dia AS 
+ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_dia.patentes_total,
+    stats_gps_proveedor_dia.fecha,
+    stats_gps_proveedor_dia.dia,
+    stats_gps_proveedor_dia.frecuencia_motor_on,
+    stats_gps_proveedor_dia.frecuencia_motor_off,
+    stats_gps_proveedor_dia.latencia,
+    stats_gps_proveedor_dia.q_patetentes_no_ign,
+    stats_gps_proveedor_dia.q_patentes_no_deteccion,
+    stats_gps_proveedor_dia.q_desordenadas
+   FROM (stats_gps_proveedor_dia
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_dia.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_dia.fecha, stats_gps_proveedor_dia.dia;
+
+ CREATE VIEW v_stats_gps_proveedor_hora AS 
+ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_hora.patentes_total,
+    stats_gps_proveedor_hora.fecha,
+    stats_gps_proveedor_hora.hora,
+    stats_gps_proveedor_hora.frecuencia_motor_on,
+    stats_gps_proveedor_hora.frecuencia_motor_off,
+    stats_gps_proveedor_hora.latencia,
+    stats_gps_proveedor_hora.q_patetentes_no_ign,
+    stats_gps_proveedor_hora.q_patentes_no_deteccion,
+    stats_gps_proveedor_hora.q_desordenadas
+   FROM (stats_gps_proveedor_hora
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_hora.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_hora.fecha, stats_gps_proveedor_hora.hora;
+  
+ CREATE VIEW v_stats_gps_proveedor_mes AS 
+ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_mes.patentes_total,
+    stats_gps_proveedor_mes.fecha,
+    stats_gps_proveedor_mes.mes,
+    stats_gps_proveedor_mes.frecuencia_motor_on,
+    stats_gps_proveedor_mes.frecuencia_motor_off,
+    stats_gps_proveedor_mes.latencia,
+    stats_gps_proveedor_mes.q_patetentes_no_ign,
+    stats_gps_proveedor_mes.q_patentes_no_deteccion,
+    stats_gps_proveedor_mes.q_desordenadas
+   FROM (stats_gps_proveedor_mes
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_mes.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_mes.fecha, stats_gps_proveedor_mes.mes;
+
+ CREATE VIEW v_stats_gps_proveedor_semana AS 
+ SELECT gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_proveedor_semana.patentes_total,
+    stats_gps_proveedor_semana.fecha,
+    stats_gps_proveedor_semana.semana,
+    stats_gps_proveedor_semana.frecuencia_motor_on,
+    stats_gps_proveedor_semana.frecuencia_motor_off,
+    stats_gps_proveedor_semana.latencia,
+    stats_gps_proveedor_semana.q_patetentes_no_ign,
+    stats_gps_proveedor_semana.q_patentes_no_deteccion,
+    stats_gps_proveedor_semana.q_desordenadas
+   FROM (stats_gps_proveedor_semana
+     LEFT JOIN gps_proveedor ON ((stats_gps_proveedor_semana.proveedor_id = gps_proveedor.id)))
+  ORDER BY gps_proveedor.razon_social, stats_gps_proveedor_semana.fecha, stats_gps_proveedor_semana.semana;
+
+ CREATE VIEW v_stats_gps_semana_patente AS 
+ SELECT stats_gps_semana_patente.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    trn_patentes.id AS patente_id,
+    trn_patentes.patente,
+    gps_imei.id AS imei_id,
+    gps_imei.imei,
+    stats_gps_semana_patente.fecha,
+    stats_gps_semana_patente.semana,
+    stats_gps_semana_patente.frecuencia_motor_on,
+    stats_gps_semana_patente.frecuencia_motor_off,
+    stats_gps_semana_patente.latencia,
+    stats_gps_semana_patente.q_patetentes_no_ign,
+    stats_gps_semana_patente.q_patentes_no_deteccion,
+    stats_gps_semana_patente.q_desordenadas
+   FROM ((((stats_gps_semana_patente
+     LEFT JOIN trn_patentes ON ((stats_gps_semana_patente.patente_id = trn_patentes.id)))
+     LEFT JOIN trn_transportista ON ((stats_gps_semana_patente.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_semana_patente.proveedor_id = gps_proveedor.id)))
+     LEFT JOIN gps_imei ON ((stats_gps_semana_patente.imei_id = gps_imei.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, trn_patentes.patente, gps_imei.imei;
+
+ CREATE VIEW v_stats_gps_semana_transportista AS 
+ SELECT stats_gps_semana_transportista.id,
+    trn_transportista.id AS transportista_id,
+    trn_transportista.razon_social AS transportista,
+    gps_proveedor.id AS proveedor_id,
+    gps_proveedor.razon_social AS proveedor,
+    stats_gps_semana_transportista.fecha,
+    stats_gps_semana_transportista.semana,
+    stats_gps_semana_transportista.frecuencia_motor_on,
+    stats_gps_semana_transportista.frecuencia_motor_off,
+    stats_gps_semana_transportista.latencia,
+    stats_gps_semana_transportista.q_patetentes_no_ign,
+    stats_gps_semana_transportista.q_patentes_no_deteccion,
+    stats_gps_semana_transportista.q_desordenadas
+   FROM ((stats_gps_semana_transportista
+     LEFT JOIN trn_transportista ON ((stats_gps_semana_transportista.transportista_id = trn_transportista.id)))
+     LEFT JOIN gps_proveedor ON ((stats_gps_semana_transportista.proveedor_id = gps_proveedor.id)))
+  ORDER BY trn_transportista.razon_social, gps_proveedor.razon_social, stats_gps_semana_transportista.fecha, stats_gps_semana_transportista.semana;
+
